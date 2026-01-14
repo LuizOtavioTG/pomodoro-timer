@@ -1,0 +1,60 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.timer-controls {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.control-button {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.control-button:hover {
+  transform: translateY(-1px);
+}
+
+.control-button:active {
+  transform: translateY(0);
+}
+
+.control-button.primary {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+.control-button.primary:hover {
+  background: #1d4ed8;
+}
+
+.control-button.secondary {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.control-button.secondary:hover {
+  background: #cbd5e1;
+}
+
+.control-button.danger {
+  background: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);
+}
+
+.control-button.danger:hover {
+  background: #dc2626;
+}
