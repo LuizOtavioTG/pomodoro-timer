@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { PomodoroContainer } from "./pomodoro-container/pomodoro-container";
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  standalone: true,
+  imports: [PomodoroContainer],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
