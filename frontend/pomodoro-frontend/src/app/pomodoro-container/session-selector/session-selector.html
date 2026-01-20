@@ -1,5 +1,23 @@
 <div class="session-selector">
-  <button class="session-button active">Curto</button>
-  <button class="session-button">Longo</button>
-  <button class="session-button">Descanso</button>
+  <button
+    class="session-button"
+    [class.active]="selectedSession === 'short'"
+    (click)="selectSession('short')"
+  >
+    Curto
+  </button>
+  <button
+    class="session-button"
+    [class.active]="selectedSession === 'long'"
+    (click)="selectSession('long')"
+  >
+    Longo
+  </button>
+  <button
+    class="session-button"
+    [class.active]="selectedSession === 'break'"
+    (click)="selectSession('break')"
+  >
+    Descanso
+  </button>
 </div>
