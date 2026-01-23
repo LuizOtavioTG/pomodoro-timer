@@ -20,4 +20,12 @@ describe('TimerControls', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should emit start when start button is triggered', () => {
+    spyOn(component.startClicked, 'emit');
+
+    component.startClicked.emit();
+
+    expect(component.startClicked.emit).toHaveBeenCalled();
+  });
 });

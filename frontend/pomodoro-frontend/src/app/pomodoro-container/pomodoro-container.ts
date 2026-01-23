@@ -3,6 +3,7 @@ import { TimerDisplay } from "./timer-display/timer-display";
 import { SessionSelector } from "./session-selector/session-selector";
 import { TimerControls } from "./timer-controls/timer-controls";
 import { PomodoroSessionType } from '../services/pomodoro-config';
+import { PomodoroTimerService } from '../services/pomodoro-timer';
 
 @Component({
   selector: 'app-pomodoro-container',
@@ -12,9 +13,9 @@ import { PomodoroSessionType } from '../services/pomodoro-config';
   styleUrl: './pomodoro-container.scss',
 })
 export class PomodoroContainer {
-  selectedSession: PomodoroSessionType = 'short';
+  constructor(public pomodoroTimer: PomodoroTimerService) {}
 
   onSessionSelected(sessionType: PomodoroSessionType): void {
-    this.selectedSession = sessionType;
+    this.pomodoroTimer.selectSession(sessionType);
   }
 }

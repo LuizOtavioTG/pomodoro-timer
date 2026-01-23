@@ -14,6 +14,7 @@ describe('TimerDisplay', () => {
 
     fixture = TestBed.createComponent(TimerDisplay);
     component = fixture.componentInstance;
+    component.formattedTime = '25:00';
     fixture.detectChanges();
   });
 

@@ -1,5 +1,5 @@
 <div class="timer-controls">
-  <button class="control-button primary">Iniciar</button>
-  <button class="control-button secondary">Pausar</button>
-  <button class="control-button danger">Resetar</button>
+  <button class="control-button primary" (click)="startClicked.emit()">Iniciar</button>
+  <button class="control-button secondary" (click)="pauseClicked.emit()">Pausar</button>
+  <button class="control-button danger" (click)="resetClicked.emit()">Resetar</button>
 </div>
