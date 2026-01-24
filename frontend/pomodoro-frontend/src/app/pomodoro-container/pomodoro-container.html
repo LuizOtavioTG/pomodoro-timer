@@ -1,4 +1,14 @@
 <div class="pomodoro-container">
+  <div class="container-header">
+    <button
+      type="button"
+      class="settings-button"
+      (click)="openSettingsModal()"
+    >
+      Configuracoes
+    </button>
+  </div>
+
   <app-session-selector
     [selectedSession]="pomodoroTimer.selectedSession"
     (sessionSelected)="onSessionSelected($event)"
@@ -12,3 +22,25 @@
     (resetClicked)="pomodoroTimer.reset()"
   ></app-timer-controls>
 </div>
+
+<app-modal
+  [isOpen]="isSettingsModalOpen"
+  title="Configuracoes"
+  (closed)="closeSettingsModal()"
+>
+  <div modalBody>
+    <p class="modal-placeholder-text">
+      A tela de configuracoes sera implementada neste modal reutilizavel.
+    </p>
+  </div>
+
+  <div modalActions>
+    <button
+      type="button"
+      class="modal-action-button"
+      (click)="closeSettingsModal()"
+    >
+      Fechar
+    </button>
+  </div>
+</app-modal>

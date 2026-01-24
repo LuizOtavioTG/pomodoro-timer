@@ -20,4 +20,13 @@ describe('PomodoroContainer', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should open the settings modal', () => {
+    component.openSettingsModal();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.modal-backdrop')).not.toBeNull();
+    expect(compiled.textContent).toContain('Configuracoes');
+  });
 });

@@ -20,3 +20,50 @@
   align-items: center;
   gap: 24px;
 }
+
+.container-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.settings-button,
+.modal-action-button {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.settings-button {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.settings-button:hover,
+.modal-action-button:hover {
+  transform: translateY(-1px);
+}
+
+.settings-button:hover {
+  background: #cbd5e1;
+}
+
+.modal-action-button {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+}
+
+.modal-action-button:hover {
+  background: #1d4ed8;
+}
+
+.modal-placeholder-text {
+  margin: 0;
+  line-height: 1.6;
+}

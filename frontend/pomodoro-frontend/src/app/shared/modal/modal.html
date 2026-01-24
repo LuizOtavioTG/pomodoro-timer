@@ -1,0 +1,35 @@
+@if (isOpen) {
+  <div class="modal-backdrop" (click)="onBackdropClick()">
+    <section
+      class="modal-panel"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="title ? 'modal-title' : null"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="modal-header">
+        @if (title) {
+          <h2 id="modal-title" class="modal-title">{{ title }}</h2>
+        }
+
+        <button
+          #closeButton
+          type="button"
+          class="modal-close-button"
+          aria-label="Fechar modal"
+          (click)="onCloseClick()"
+        >
+          X
+        </button>
+      </header>
+
+      <div class="modal-body">
+        <ng-content select="[modalBody]"></ng-content>
+      </div>
+
+      <footer class="modal-actions">
+        <ng-content select="[modalActions]"></ng-content>
+      </footer>
+    </section>
+  </div>
+}
