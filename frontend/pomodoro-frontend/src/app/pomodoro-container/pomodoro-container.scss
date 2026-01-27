@@ -90,67 +90,6 @@
   background: #e2e8f0;
 }
 
-.settings-description {
-  margin: 0 0 20px;
-  line-height: 1.6;
-}
-
-.settings-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.settings-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.settings-label {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #0f172a;
-}
-
-.settings-input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 16px;
-  background: #f8fafc;
-}
-
-.settings-input-wrapper:focus-within {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-}
-
-.settings-input {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #0f172a;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.settings-unit {
-  color: #64748b;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.settings-error {
-  margin: 16px 0 0;
-  color: #b91c1c;
-  font-size: 0.92rem;
-  line-height: 1.5;
-}
-
 @media (max-width: 640px) {
   .container-header {
     justify-content: stretch;

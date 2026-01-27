@@ -1,6 +1,4 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { TimerDisplay } from "./timer-display/timer-display";
 import { SessionSelector } from "./session-selector/session-selector";
 import { TimerControls } from "./timer-controls/timer-controls";
@@ -11,17 +9,17 @@ import {
 } from '../services/pomodoro-config';
 import { PomodoroTimerService } from '../services/pomodoro-timer';
 import { ModalComponent } from '../shared/modal/modal';
+import { SettingsFormComponent } from './settings-form/settings-form';
 
 @Component({
   selector: 'app-pomodoro-container',
   standalone:true,
   imports: [
-    CommonModule,
-    FormsModule,
     TimerDisplay,
     SessionSelector,
     TimerControls,
     ModalComponent,
+    SettingsFormComponent,
   ],
   templateUrl: './pomodoro-container.html',
   styleUrl: './pomodoro-container.scss',
@@ -56,7 +54,7 @@ export class PomodoroContainer {
   }
 
   saveSettings(): void {
-    if (!this.isSettingsFormValid()) {
+    if (!this.canSaveSettings()) {
       return;
     }
 
@@ -65,10 +63,14 @@ export class PomodoroContainer {
     this.closeSettingsModal();
   }
 
-  isSettingsFormValid(): boolean {
+  canSaveSettings(): boolean {
     return this.isValidDuration(this.settingsForm.shortMinutes)
       && this.isValidDuration(this.settingsForm.longMinutes)
       && this.isValidDuration(this.settingsForm.breakMinutes);
+  }
+
+  onSettingsFormChange(settings: PomodoroSettings): void {
+    this.settingsForm = settings;
   }
 
   private createSettingsSnapshot(): PomodoroSettings {

@@ -1,0 +1,62 @@
+<p class="settings-description">
+  Defina a duracao de cada tipo de sessao em minutos.
+</p>
+
+<div class="settings-form">
+  <label class="settings-field">
+    <span class="settings-label">Pomodoro curto</span>
+    <div class="settings-input-wrapper">
+      <input
+        type="number"
+        [min]="minMinutes"
+        [max]="maxMinutes"
+        step="1"
+        class="settings-input"
+        [ngModel]="settings.shortMinutes"
+        (ngModelChange)="updateSetting('shortMinutes', $event)"
+      />
+      <span class="settings-unit">min</span>
+    </div>
+    @if (getShortError(); as shortError) {
+      <p class="settings-error">{{ shortError }}</p>
+    }
+  </label>
+
+  <label class="settings-field">
+    <span class="settings-label">Pomodoro longo</span>
+    <div class="settings-input-wrapper">
+      <input
+        type="number"
+        [min]="minMinutes"
+        [max]="maxMinutes"
+        step="1"
+        class="settings-input"
+        [ngModel]="settings.longMinutes"
+        (ngModelChange)="updateSetting('longMinutes', $event)"
+      />
+      <span class="settings-unit">min</span>
+    </div>
+    @if (getLongError(); as longError) {
+      <p class="settings-error">{{ longError }}</p>
+    }
+  </label>
+
+  <label class="settings-field">
+    <span class="settings-label">Descanso</span>
+    <div class="settings-input-wrapper">
+      <input
+        type="number"
+        [min]="minMinutes"
+        [max]="maxMinutes"
+        step="1"
+        class="settings-input"
+        [ngModel]="settings.breakMinutes"
+        (ngModelChange)="updateSetting('breakMinutes', $event)"
+      />
+      <span class="settings-unit">min</span>
+    </div>
+    @if (getBreakError(); as breakError) {
+      <p class="settings-error">{{ breakError }}</p>
+    }
+  </label>
+</div>

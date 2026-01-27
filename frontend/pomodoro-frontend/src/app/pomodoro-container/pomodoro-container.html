@@ -29,62 +29,10 @@
   (closed)="closeSettingsModal()"
 >
   <div modalBody>
-    <p class="settings-description">
-      Defina a duracao de cada tipo de sessao em minutos.
-    </p>
-
-    <div class="settings-form">
-      <label class="settings-field">
-        <span class="settings-label">Pomodoro curto</span>
-        <div class="settings-input-wrapper">
-          <input
-            type="number"
-            min="1"
-            max="120"
-            step="1"
-            class="settings-input"
-            [(ngModel)]="settingsForm.shortMinutes"
-          />
-          <span class="settings-unit">min</span>
-        </div>
-      </label>
-
-      <label class="settings-field">
-        <span class="settings-label">Pomodoro longo</span>
-        <div class="settings-input-wrapper">
-          <input
-            type="number"
-            min="1"
-            max="120"
-            step="1"
-            class="settings-input"
-            [(ngModel)]="settingsForm.longMinutes"
-          />
-          <span class="settings-unit">min</span>
-        </div>
-      </label>
-
-      <label class="settings-field">
-        <span class="settings-label">Descanso</span>
-        <div class="settings-input-wrapper">
-          <input
-            type="number"
-            min="1"
-            max="120"
-            step="1"
-            class="settings-input"
-            [(ngModel)]="settingsForm.breakMinutes"
-          />
-          <span class="settings-unit">min</span>
-        </div>
-      </label>
-    </div>
-
-    @if (!isSettingsFormValid()) {
-      <p class="settings-error">
-        Use apenas numeros inteiros entre 1 e 120 minutos.
-      </p>
-    }
+    <app-settings-form
+      [settings]="settingsForm"
+      (settingsChange)="onSettingsFormChange($event)"
+    ></app-settings-form>
   </div>
 
   <div modalActions>
@@ -107,7 +55,7 @@
     <button
       type="button"
       class="modal-action-button"
-      [disabled]="!isSettingsFormValid()"
+      [disabled]="!canSaveSettings()"
       (click)="saveSettings()"
     >
       Salvar

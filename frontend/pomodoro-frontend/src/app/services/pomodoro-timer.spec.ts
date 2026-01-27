@@ -7,6 +7,7 @@ describe('PomodoroTimerService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
+    localStorage.clear();
     service = TestBed.inject(PomodoroTimerService);
   });
 
