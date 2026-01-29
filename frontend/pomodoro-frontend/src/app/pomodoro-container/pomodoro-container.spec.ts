@@ -50,6 +50,12 @@ describe('PomodoroContainer', () => {
   });
 
   it('should restore the default settings in the form', () => {
+    configService.updateSettings({
+      shortMinutes: 40,
+      longMinutes: 70,
+      breakMinutes: 15,
+    });
+    component.pomodoroTimer.selectSession('break');
     component.settingsForm = {
       shortMinutes: 40,
       longMinutes: 70,
@@ -63,6 +69,12 @@ describe('PomodoroContainer', () => {
       longMinutes: 50,
       breakMinutes: 10,
     });
+    expect(configService.getSettings()).toEqual({
+      shortMinutes: 25,
+      longMinutes: 50,
+      breakMinutes: 10,
+    });
+    expect(component.pomodoroTimer.formattedTime).toBe('10:00');
   });
 
   it('should save valid settings and close the modal', () => {

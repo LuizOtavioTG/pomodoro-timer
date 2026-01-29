@@ -46,11 +46,9 @@ export class PomodoroContainer {
   }
 
   restoreDefaultSettings(): void {
-    this.settingsForm = {
-      shortMinutes: 25,
-      longMinutes: 50,
-      breakMinutes: 10,
-    };
+    this.pomodoroConfig.resetSettings();
+    this.settingsForm = this.createSettingsSnapshot();
+    this.pomodoroTimer.reset();
   }
 
   saveSettings(): void {
