@@ -1,26 +1,29 @@
-<div class="pomodoro-container">
-  <div class="container-header">
+<div class="pomodoro-layout">
+  <div class="page-toolbar">
     <button
       type="button"
       class="settings-button"
+      aria-label="Abrir configuracoes"
       (click)="openSettingsModal()"
     >
-      Configuracoes
+      ⚙
     </button>
   </div>
 
-  <app-session-selector
-    [selectedSession]="pomodoroTimer.selectedSession"
-    (sessionSelected)="onSessionSelected($event)"
-  ></app-session-selector>
-  <app-timer-display
-    [formattedTime]="pomodoroTimer.formattedTime"
-  ></app-timer-display>
-  <app-timer-controls
-    (startClicked)="pomodoroTimer.start()"
-    (pauseClicked)="pomodoroTimer.pause()"
-    (resetClicked)="pomodoroTimer.reset()"
-  ></app-timer-controls>
+  <div class="pomodoro-container">
+    <app-session-selector
+      [selectedSession]="pomodoroTimer.selectedSession"
+      (sessionSelected)="onSessionSelected($event)"
+    ></app-session-selector>
+    <app-timer-display
+      [formattedTime]="pomodoroTimer.formattedTime"
+    ></app-timer-display>
+    <app-timer-controls
+      (startClicked)="pomodoroTimer.start()"
+      (pauseClicked)="pomodoroTimer.pause()"
+      (resetClicked)="pomodoroTimer.reset()"
+    ></app-timer-controls>
+  </div>
 </div>
 
 <app-modal
