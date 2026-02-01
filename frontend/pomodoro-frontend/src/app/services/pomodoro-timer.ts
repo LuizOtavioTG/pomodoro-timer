@@ -14,6 +14,7 @@ export class PomodoroTimerService {
   selectedSession: PomodoroSessionType = 'short';
   remainingSeconds = this.getDurationInSeconds('short');
   formattedTime = this.formatTime(this.remainingSeconds);
+  completedPomodorosToday = 0;
 
   private timerSubscription?: Subscription;
 

@@ -20,6 +20,10 @@ describe('PomodoroTimerService', () => {
     expect(service.formattedTime).toBe('25:00');
   });
 
+  it('should start with no completed pomodoros today', () => {
+    expect(service.completedPomodorosToday).toBe(0);
+  });
+
   it('should reset the timer when the session changes', () => {
     service.selectSession('break');
 
