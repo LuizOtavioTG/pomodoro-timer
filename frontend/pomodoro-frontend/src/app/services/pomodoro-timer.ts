@@ -5,6 +5,8 @@ import {
   PomodoroSessionType,
 } from './pomodoro-config';
 
+const DAILY_POMODORO_COUNT_STORAGE_KEY = 'daily-pomodoro-count';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -58,6 +60,7 @@ export class PomodoroTimerService {
   private completeSession(): void {
     if (this.isFocusSession()) {
       this.completedPomodorosToday++;
+      this.saveCompletedPomodorosToday();
     }
 
     this.pause();
@@ -65,6 +68,25 @@ export class PomodoroTimerService {
 
   private isFocusSession(): boolean {
     return this.selectedSession !== 'break';
+  }
+
+  private saveCompletedPomodorosToday(): void {
+    localStorage.setItem(
+      DAILY_POMODORO_COUNT_STORAGE_KEY,
+      JSON.stringify({
+        date: this.getTodayDateString(),
+        count: this.completedPomodorosToday,
+      })
+    );
+  }
+
+  private getTodayDateString(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
   }
 
   private formatTime(totalSeconds: number): string {

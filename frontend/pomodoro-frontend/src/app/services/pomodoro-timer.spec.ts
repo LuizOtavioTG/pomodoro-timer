@@ -3,6 +3,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PomodoroTimerService } from './pomodoro-timer';
 
 describe('PomodoroTimerService', () => {
+  const dailyPomodoroCountStorageKey = 'daily-pomodoro-count';
   let service: PomodoroTimerService;
 
   beforeEach(() => {
@@ -40,6 +41,20 @@ describe('PomodoroTimerService', () => {
     expect(service.completedPomodorosToday).toBe(1);
   }));
 
+  it('should save completed focus sessions to local storage', fakeAsync(() => {
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(localStorage.getItem(dailyPomodoroCountStorageKey)).toBe(
+      JSON.stringify({
+        date: getTodayDateString(),
+        count: 1,
+      })
+    );
+  }));
+
   it('should not count completed break sessions', fakeAsync(() => {
     service.selectSession('break');
     service.remainingSeconds = 1;
@@ -49,4 +64,13 @@ describe('PomodoroTimerService', () => {
 
     expect(service.completedPomodorosToday).toBe(0);
   }));
+
+  function getTodayDateString(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
 });
