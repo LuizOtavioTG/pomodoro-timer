@@ -35,7 +35,7 @@ export class PomodoroTimerService {
       }
 
       if (this.remainingSeconds === 0) {
-        this.pause();
+        this.completeSession();
       }
     });
   }
@@ -53,6 +53,18 @@ export class PomodoroTimerService {
 
   private getDurationInSeconds(sessionType: PomodoroSessionType): number {
     return this.pomodoroConfig.getDurationInMinutes(sessionType) * 60;
+  }
+
+  private completeSession(): void {
+    if (this.isFocusSession()) {
+      this.completedPomodorosToday++;
+    }
+
+    this.pause();
+  }
+
+  private isFocusSession(): boolean {
+    return this.selectedSession !== 'break';
   }
 
   private formatTime(totalSeconds: number): string {

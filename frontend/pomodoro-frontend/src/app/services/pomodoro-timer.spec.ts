@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { PomodoroTimerService } from './pomodoro-timer';
 
@@ -30,4 +30,23 @@ describe('PomodoroTimerService', () => {
     expect(service.selectedSession).toBe('break');
     expect(service.formattedTime).toBe('10:00');
   });
+
+  it('should count completed focus sessions', fakeAsync(() => {
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(service.completedPomodorosToday).toBe(1);
+  }));
+
+  it('should not count completed break sessions', fakeAsync(() => {
+    service.selectSession('break');
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(service.completedPomodorosToday).toBe(0);
+  }));
 });
