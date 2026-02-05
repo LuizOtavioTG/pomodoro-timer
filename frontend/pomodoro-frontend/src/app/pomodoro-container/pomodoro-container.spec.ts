@@ -33,6 +33,15 @@ describe('PomodoroContainer', () => {
     expect(compiled.textContent).toContain('Configuracoes');
   });
 
+  it('should display the completed pomodoros for today', () => {
+    component.pomodoroTimer.completedPomodorosToday = 4;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
+      .toContain('Pomodoros hoje: 4');
+  });
+
   it('should load the current settings when opening the modal', () => {
     configService.updateSettings({
       shortMinutes: 30,
