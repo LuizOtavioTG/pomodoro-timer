@@ -1,4 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 
 import { PomodoroContainer } from './pomodoro-container';
 import { PomodoroConfigService } from '../services/pomodoro-config';
@@ -9,6 +14,8 @@ describe('PomodoroContainer', () => {
   let configService: PomodoroConfigService;
 
   beforeEach(async () => {
+    localStorage.clear();
+
     await TestBed.configureTestingModule({
       imports: [PomodoroContainer]
     })
@@ -41,6 +48,18 @@ describe('PomodoroContainer', () => {
     expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
       .toContain('Pomodoros hoje: 4');
   });
+
+  it('should update the completed pomodoros display when a focus session ends', fakeAsync(() => {
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
+      .toContain('Pomodoros hoje: 1');
+  }));
 
   it('should load the current settings when opening the modal', () => {
     configService.updateSettings({
