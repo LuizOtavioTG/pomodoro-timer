@@ -25,6 +25,30 @@ describe('PomodoroTimerService', () => {
     expect(service.completedPomodorosToday).toBe(0);
   });
 
+  it('should load saved completed pomodoros from today', () => {
+    service = createServiceWithStoredDailyPomodoroCount({
+      date: getTodayDateString(),
+      count: 3,
+    });
+
+    expect(service.completedPomodorosToday).toBe(3);
+  });
+
+  it('should reset saved completed pomodoros from a previous day', () => {
+    service = createServiceWithStoredDailyPomodoroCount({
+      date: getPreviousDayDateString(),
+      count: 5,
+    });
+
+    expect(service.completedPomodorosToday).toBe(0);
+    expect(localStorage.getItem(dailyPomodoroCountStorageKey)).toBe(
+      JSON.stringify({
+        date: getTodayDateString(),
+        count: 0,
+      })
+    );
+  });
+
   it('should reset the timer when the session changes', () => {
     service.selectSession('break');
 
@@ -72,5 +96,29 @@ describe('PomodoroTimerService', () => {
     const day = String(today.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+  }
+
+  function getPreviousDayDateString(): string {
+    const previousDay = new Date();
+    previousDay.setDate(previousDay.getDate() - 1);
+    const year = previousDay.getFullYear();
+    const month = String(previousDay.getMonth() + 1).padStart(2, '0');
+    const day = String(previousDay.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
+  function createServiceWithStoredDailyPomodoroCount(
+    dailyPomodoroCount: unknown
+  ): PomodoroTimerService {
+    TestBed.resetTestingModule();
+    localStorage.clear();
+    localStorage.setItem(
+      dailyPomodoroCountStorageKey,
+      JSON.stringify(dailyPomodoroCount)
+    );
+    TestBed.configureTestingModule({});
+
+    return TestBed.inject(PomodoroTimerService);
   }
 });

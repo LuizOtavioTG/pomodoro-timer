@@ -7,6 +7,11 @@ import {
 
 const DAILY_POMODORO_COUNT_STORAGE_KEY = 'daily-pomodoro-count';
 
+interface DailyPomodoroCount {
+  date: string;
+  count: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -16,7 +21,7 @@ export class PomodoroTimerService {
   selectedSession: PomodoroSessionType = 'short';
   remainingSeconds = this.getDurationInSeconds('short');
   formattedTime = this.formatTime(this.remainingSeconds);
-  completedPomodorosToday = 0;
+  completedPomodorosToday = this.loadCompletedPomodorosToday();
 
   private timerSubscription?: Subscription;
 
@@ -71,13 +76,51 @@ export class PomodoroTimerService {
   }
 
   private saveCompletedPomodorosToday(): void {
+    this.saveDailyPomodoroCount(this.completedPomodorosToday);
+  }
+
+  private saveDailyPomodoroCount(count: number): void {
     localStorage.setItem(
       DAILY_POMODORO_COUNT_STORAGE_KEY,
       JSON.stringify({
         date: this.getTodayDateString(),
-        count: this.completedPomodorosToday,
+        count,
       })
     );
+  }
+
+  private loadCompletedPomodorosToday(): number {
+    const savedDailyPomodoroCount = localStorage.getItem(
+      DAILY_POMODORO_COUNT_STORAGE_KEY
+    );
+
+    if (!savedDailyPomodoroCount) {
+      return 0;
+    }
+
+    try {
+      const parsedDailyPomodoroCount = JSON.parse(
+        savedDailyPomodoroCount
+      ) as DailyPomodoroCount;
+
+      if (this.isSavedDailyPomodoroCountValid(parsedDailyPomodoroCount)) {
+        return parsedDailyPomodoroCount.count;
+      }
+    } catch {
+      this.saveDailyPomodoroCount(0);
+      return 0;
+    }
+
+    this.saveDailyPomodoroCount(0);
+    return 0;
+  }
+
+  private isSavedDailyPomodoroCountValid(
+    dailyPomodoroCount: DailyPomodoroCount
+  ): boolean {
+    return dailyPomodoroCount.date === this.getTodayDateString()
+      && Number.isInteger(dailyPomodoroCount.count)
+      && dailyPomodoroCount.count >= 0;
   }
 
   private getTodayDateString(): string {
