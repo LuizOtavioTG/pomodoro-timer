@@ -79,6 +79,16 @@ describe('PomodoroTimerService', () => {
     );
   }));
 
+  it('should keep completed pomodoros after reloading the service', fakeAsync(() => {
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+    service = reloadService();
+
+    expect(service.completedPomodorosToday).toBe(1);
+  }));
+
   it('should not count completed break sessions', fakeAsync(() => {
     service.selectSession('break');
     service.remainingSeconds = 1;
@@ -117,6 +127,13 @@ describe('PomodoroTimerService', () => {
       dailyPomodoroCountStorageKey,
       JSON.stringify(dailyPomodoroCount)
     );
+    TestBed.configureTestingModule({});
+
+    return TestBed.inject(PomodoroTimerService);
+  }
+
+  function reloadService(): PomodoroTimerService {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({});
 
     return TestBed.inject(PomodoroTimerService);
