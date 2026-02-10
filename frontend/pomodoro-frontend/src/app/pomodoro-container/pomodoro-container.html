@@ -19,7 +19,7 @@
       [formattedTime]="pomodoroTimer.formattedTime"
     ></app-timer-display>
     <p class="daily-pomodoro-count" aria-live="polite">
-      Pomodoros hoje: {{ pomodoroTimer.completedPomodorosToday }}
+      {{ dailyPomodoroProgressMessage }}
     </p>
     <app-timer-controls
       (startClicked)="pomodoroTimer.start()"

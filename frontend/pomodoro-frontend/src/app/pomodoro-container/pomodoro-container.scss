@@ -36,9 +36,15 @@
 
 .daily-pomodoro-count {
   margin: -8px 0 0;
-  color: #475569;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1e3a8a;
   font-size: 0.95rem;
   font-weight: 600;
+  line-height: 1.4;
+  padding: 8px 14px;
+  text-align: center;
 }
 
 .settings-button,

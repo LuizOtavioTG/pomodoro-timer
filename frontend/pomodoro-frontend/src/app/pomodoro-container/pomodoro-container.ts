@@ -32,6 +32,20 @@ export class PomodoroContainer {
 
   constructor(public pomodoroTimer: PomodoroTimerService) {}
 
+  get dailyPomodoroProgressMessage(): string {
+    const completedPomodoros = this.pomodoroTimer.completedPomodorosToday;
+
+    if (completedPomodoros === 0) {
+      return 'Nenhum pomodoro concluido hoje';
+    }
+
+    if (completedPomodoros === 1) {
+      return '1 pomodoro concluido hoje';
+    }
+
+    return `${completedPomodoros} pomodoros concluidos hoje`;
+  }
+
   onSessionSelected(sessionType: PomodoroSessionType): void {
     this.pomodoroTimer.selectSession(sessionType);
   }

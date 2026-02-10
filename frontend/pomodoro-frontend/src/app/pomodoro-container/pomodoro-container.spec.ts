@@ -40,13 +40,22 @@ describe('PomodoroContainer', () => {
     expect(compiled.textContent).toContain('Configuracoes');
   });
 
-  it('should display the completed pomodoros for today', () => {
+  it('should display the completed pomodoros progress for today', () => {
     component.pomodoroTimer.completedPomodorosToday = 4;
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
-      .toContain('Pomodoros hoje: 4');
+      .toContain('4 pomodoros concluidos hoje');
+  });
+
+  it('should display singular completed pomodoro progress', () => {
+    component.pomodoroTimer.completedPomodorosToday = 1;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
+      .toContain('1 pomodoro concluido hoje');
   });
 
   it('should update the completed pomodoros display when a focus session ends', fakeAsync(() => {
@@ -58,7 +67,7 @@ describe('PomodoroContainer', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
-      .toContain('Pomodoros hoje: 1');
+      .toContain('1 pomodoro concluido hoje');
   }));
 
   it('should load the current settings when opening the modal', () => {
