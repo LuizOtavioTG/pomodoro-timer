@@ -65,6 +65,16 @@ describe('PomodoroTimerService', () => {
     expect(service.completedPomodorosToday).toBe(1);
   }));
 
+  it('should move from a completed short focus session to a break', fakeAsync(() => {
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(service.selectedSession).toBe('break');
+    expect(service.formattedTime).toBe('10:00');
+  }));
+
   it('should save completed focus sessions to local storage', fakeAsync(() => {
     service.remainingSeconds = 1;
 
@@ -97,6 +107,27 @@ describe('PomodoroTimerService', () => {
     tick(1000);
 
     expect(service.completedPomodorosToday).toBe(0);
+  }));
+
+  it('should move from a completed break session to a short focus session', fakeAsync(() => {
+    service.selectSession('break');
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(service.selectedSession).toBe('short');
+    expect(service.formattedTime).toBe('25:00');
+  }));
+
+  it('should move to a long focus session after four completed short cycles', fakeAsync(() => {
+    completeShortFocusAndBreakCycle();
+    completeShortFocusAndBreakCycle();
+    completeShortFocusAndBreakCycle();
+    completeShortFocusAndBreakCycle();
+
+    expect(service.selectedSession).toBe('long');
+    expect(service.formattedTime).toBe('50:00');
   }));
 
   function getTodayDateString(): string {
@@ -137,5 +168,15 @@ describe('PomodoroTimerService', () => {
     TestBed.configureTestingModule({});
 
     return TestBed.inject(PomodoroTimerService);
+  }
+
+  function completeShortFocusAndBreakCycle(): void {
+    service.remainingSeconds = 1;
+    service.start();
+    tick(1000);
+
+    service.remainingSeconds = 1;
+    service.start();
+    tick(1000);
   }
 });

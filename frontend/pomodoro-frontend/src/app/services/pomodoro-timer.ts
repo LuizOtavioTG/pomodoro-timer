@@ -6,6 +6,7 @@ import {
 } from './pomodoro-config';
 
 const DAILY_POMODORO_COUNT_STORAGE_KEY = 'daily-pomodoro-count';
+const SHORT_CYCLES_BEFORE_LONG_FOCUS = 4;
 
 interface DailyPomodoroCount {
   date: string;
@@ -24,6 +25,7 @@ export class PomodoroTimerService {
   completedPomodorosToday = this.loadCompletedPomodorosToday();
 
   private timerSubscription?: Subscription;
+  private completedShortCycles = 0;
 
   selectSession(sessionType: PomodoroSessionType): void {
     this.selectedSession = sessionType;
@@ -69,10 +71,37 @@ export class PomodoroTimerService {
     }
 
     this.pause();
+    this.selectNextSession();
   }
 
   private isFocusSession(): boolean {
     return this.selectedSession !== 'break';
+  }
+
+  private selectNextSession(): void {
+    const nextSession = this.getNextSession();
+
+    this.selectedSession = nextSession;
+    this.remainingSeconds = this.getDurationInSeconds(nextSession);
+    this.formattedTime = this.formatTime(this.remainingSeconds);
+  }
+
+  private getNextSession(): PomodoroSessionType {
+    if (this.selectedSession === 'short') {
+      this.completedShortCycles++;
+      return 'break';
+    }
+
+    if (this.selectedSession === 'break') {
+      if (this.completedShortCycles >= SHORT_CYCLES_BEFORE_LONG_FOCUS) {
+        this.completedShortCycles = 0;
+        return 'long';
+      }
+
+      return 'short';
+    }
+
+    return 'break';
   }
 
   private saveCompletedPomodorosToday(): void {
