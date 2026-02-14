@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
+import { interval, Subject, Subscription } from 'rxjs';
 import {
   PomodoroConfigService,
   PomodoroSessionType,
@@ -13,16 +13,24 @@ interface DailyPomodoroCount {
   count: number;
 }
 
+export interface PomodoroSessionCompletion {
+  completedSession: PomodoroSessionType;
+  nextSession: PomodoroSessionType;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class PomodoroTimerService {
   private readonly pomodoroConfig = inject(PomodoroConfigService);
+  private readonly sessionCompletedSubject =
+    new Subject<PomodoroSessionCompletion>();
 
   selectedSession: PomodoroSessionType = 'short';
   remainingSeconds = this.getDurationInSeconds('short');
   formattedTime = this.formatTime(this.remainingSeconds);
   completedPomodorosToday = this.loadCompletedPomodorosToday();
+  sessionCompleted$ = this.sessionCompletedSubject.asObservable();
 
   private timerSubscription?: Subscription;
   private completedShortCycles = 0;
@@ -65,34 +73,43 @@ export class PomodoroTimerService {
   }
 
   private completeSession(): void {
-    if (this.isFocusSession()) {
+    const completedSession = this.selectedSession;
+
+    if (this.isFocusSession(completedSession)) {
       this.completedPomodorosToday++;
       this.saveCompletedPomodorosToday();
     }
 
     this.pause();
-    this.selectNextSession();
+    this.selectNextSession(completedSession);
   }
 
-  private isFocusSession(): boolean {
-    return this.selectedSession !== 'break';
+  private isFocusSession(sessionType: PomodoroSessionType): boolean {
+    return sessionType !== 'break';
   }
 
-  private selectNextSession(): void {
-    const nextSession = this.getNextSession();
+  private selectNextSession(completedSession: PomodoroSessionType): void {
+    const nextSession = this.getNextSession(completedSession);
+
+    this.sessionCompletedSubject.next({
+      completedSession,
+      nextSession,
+    });
 
     this.selectedSession = nextSession;
     this.remainingSeconds = this.getDurationInSeconds(nextSession);
     this.formattedTime = this.formatTime(this.remainingSeconds);
   }
 
-  private getNextSession(): PomodoroSessionType {
-    if (this.selectedSession === 'short') {
+  private getNextSession(
+    completedSession: PomodoroSessionType
+  ): PomodoroSessionType {
+    if (completedSession === 'short') {
       this.completedShortCycles++;
       return 'break';
     }
 
-    if (this.selectedSession === 'break') {
+    if (completedSession === 'break') {
       if (this.completedShortCycles >= SHORT_CYCLES_BEFORE_LONG_FOCUS) {
         this.completedShortCycles = 0;
         return 'long';

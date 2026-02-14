@@ -75,6 +75,24 @@ describe('PomodoroTimerService', () => {
     expect(service.formattedTime).toBe('10:00');
   }));
 
+  it('should emit the completed session and next session when a session ends', fakeAsync(() => {
+    const sessionCompletions: unknown[] = [];
+    service.sessionCompleted$.subscribe((sessionCompletion) => {
+      sessionCompletions.push(sessionCompletion);
+    });
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(sessionCompletions).toEqual([
+      {
+        completedSession: 'short',
+        nextSession: 'break',
+      },
+    ]);
+  }));
+
   it('should save completed focus sessions to local storage', fakeAsync(() => {
     service.remainingSeconds = 1;
 
@@ -118,6 +136,25 @@ describe('PomodoroTimerService', () => {
 
     expect(service.selectedSession).toBe('short');
     expect(service.formattedTime).toBe('25:00');
+  }));
+
+  it('should emit a completed break session before moving back to focus', fakeAsync(() => {
+    const sessionCompletions: unknown[] = [];
+    service.sessionCompleted$.subscribe((sessionCompletion) => {
+      sessionCompletions.push(sessionCompletion);
+    });
+    service.selectSession('break');
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(sessionCompletions).toEqual([
+      {
+        completedSession: 'break',
+        nextSession: 'short',
+      },
+    ]);
   }));
 
   it('should move to a long focus session after four completed short cycles', fakeAsync(() => {
