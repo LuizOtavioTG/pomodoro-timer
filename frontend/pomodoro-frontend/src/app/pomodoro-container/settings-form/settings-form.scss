@@ -62,3 +62,48 @@
   font-size: 0.92rem;
   line-height: 1.5;
 }
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.settings-section-title {
+  margin: 0;
+  color: #334155;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.settings-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.settings-toggle > span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-help {
+  color: #64748b;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.settings-checkbox {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  accent-color: #2563eb;
+}

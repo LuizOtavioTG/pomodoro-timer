@@ -83,6 +83,8 @@ describe('PomodoroContainer', () => {
       shortMinutes: 30,
       longMinutes: 55,
       breakMinutes: 12,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
     });
   });
 
@@ -97,6 +99,8 @@ describe('PomodoroContainer', () => {
       shortMinutes: 40,
       longMinutes: 70,
       breakMinutes: 15,
+      soundNotificationsEnabled: false,
+      browserNotificationsEnabled: true,
     };
 
     component.restoreDefaultSettings();
@@ -105,11 +109,15 @@ describe('PomodoroContainer', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
     });
     expect(configService.getSettings()).toEqual({
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
     });
     expect(component.pomodoroTimer.formattedTime).toBe('10:00');
   });
@@ -120,6 +128,8 @@ describe('PomodoroContainer', () => {
       shortMinutes: 35,
       longMinutes: 60,
       breakMinutes: 8,
+      soundNotificationsEnabled: false,
+      browserNotificationsEnabled: true,
     };
 
     component.saveSettings();
@@ -128,6 +138,8 @@ describe('PomodoroContainer', () => {
       shortMinutes: 35,
       longMinutes: 60,
       breakMinutes: 8,
+      soundNotificationsEnabled: false,
+      browserNotificationsEnabled: true,
     });
     expect(component.isSettingsModalOpen).toBeFalse();
     expect(component.pomodoroTimer.formattedTime).toBe('35:00');

@@ -59,4 +59,34 @@
       <p class="settings-error">{{ breakError }}</p>
     }
   </label>
+
+  <div class="settings-section">
+    <p class="settings-section-title">Alertas</p>
+
+    <label class="settings-toggle">
+      <span>
+        <span class="settings-label">Som ao fim da sessao</span>
+        <span class="settings-help">Toca um alerta quando o timer terminar.</span>
+      </span>
+      <input
+        type="checkbox"
+        class="settings-checkbox"
+        [ngModel]="settings.soundNotificationsEnabled"
+        (ngModelChange)="updateNotificationSetting('soundNotificationsEnabled', $event)"
+      />
+    </label>
+
+    <label class="settings-toggle">
+      <span>
+        <span class="settings-label">Notificacao do navegador</span>
+        <span class="settings-help">Mostra um aviso fora da aba quando permitido.</span>
+      </span>
+      <input
+        type="checkbox"
+        class="settings-checkbox"
+        [ngModel]="settings.browserNotificationsEnabled"
+        (ngModelChange)="updateNotificationSetting('browserNotificationsEnabled', $event)"
+      />
+    </label>
+  </div>
 </div>

@@ -6,6 +6,8 @@ export interface PomodoroSettings {
   shortMinutes: number;
   longMinutes: number;
   breakMinutes: number;
+  soundNotificationsEnabled: boolean;
+  browserNotificationsEnabled: boolean;
 }
 
 const STORAGE_KEY = 'pomodoro-settings';
@@ -13,6 +15,8 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   shortMinutes: 25,
   longMinutes: 50,
   breakMinutes: 10,
+  soundNotificationsEnabled: true,
+  browserNotificationsEnabled: false,
 };
 
 @Injectable({

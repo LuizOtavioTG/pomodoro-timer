@@ -16,6 +16,8 @@ describe('SettingsFormComponent', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
     };
     fixture.detectChanges();
   });
@@ -33,6 +35,22 @@ describe('SettingsFormComponent', () => {
       shortMinutes: 30,
       longMinutes: 50,
       breakMinutes: 10,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
+    });
+  });
+
+  it('should emit updated settings when a notification setting changes', () => {
+    const emitSpy = spyOn(component.settingsChange, 'emit');
+
+    component.updateNotificationSetting('browserNotificationsEnabled', true);
+
+    expect(emitSpy).toHaveBeenCalledWith({
+      shortMinutes: 25,
+      longMinutes: 50,
+      breakMinutes: 10,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: true,
     });
   });
 
@@ -41,6 +59,8 @@ describe('SettingsFormComponent', () => {
       shortMinutes: 0,
       longMinutes: -10,
       breakMinutes: 10,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
     };
 
     expect(component.getShortError()).toBe('The value must be greater than zero.');
@@ -53,6 +73,8 @@ describe('SettingsFormComponent', () => {
       shortMinutes: 121,
       longMinutes: 50,
       breakMinutes: 10,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
     };
 
     expect(component.getShortError()).toBe('The value must be at most 120 minutes.');

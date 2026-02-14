@@ -3,6 +3,15 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PomodoroSettings } from '../../services/pomodoro-config';
 
+type PomodoroDurationSettingKey =
+  | 'shortMinutes'
+  | 'longMinutes'
+  | 'breakMinutes';
+
+type PomodoroNotificationSettingKey =
+  | 'soundNotificationsEnabled'
+  | 'browserNotificationsEnabled';
+
 @Component({
   selector: 'app-settings-form',
   standalone: true,
@@ -19,7 +28,7 @@ export class SettingsFormComponent {
   readonly maxMinutes = 120;
 
   updateSetting(
-    key: keyof PomodoroSettings,
+    key: PomodoroDurationSettingKey,
     rawValue: string | number | null
   ): void {
     const numericValue = typeof rawValue === 'number'
@@ -29,6 +38,16 @@ export class SettingsFormComponent {
     this.settingsChange.emit({
       ...this.settings,
       [key]: Number.isNaN(numericValue) ? 0 : numericValue,
+    });
+  }
+
+  updateNotificationSetting(
+    key: PomodoroNotificationSettingKey,
+    enabled: boolean
+  ): void {
+    this.settingsChange.emit({
+      ...this.settings,
+      [key]: enabled,
     });
   }
 

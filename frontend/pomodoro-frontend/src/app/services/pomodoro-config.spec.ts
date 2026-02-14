@@ -20,6 +20,8 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
     });
   });
 
@@ -39,12 +41,40 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 30,
       longMinutes: 50,
       breakMinutes: 15,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
     });
     expect(localStorage.getItem('pomodoro-settings')).toBe(
       JSON.stringify({
         shortMinutes: 30,
         longMinutes: 50,
         breakMinutes: 15,
+        soundNotificationsEnabled: true,
+        browserNotificationsEnabled: false,
+      })
+    );
+  });
+
+  it('should save notification settings in localStorage', () => {
+    service.updateSettings({
+      soundNotificationsEnabled: false,
+      browserNotificationsEnabled: true,
+    });
+
+    expect(service.getSettings()).toEqual({
+      shortMinutes: 25,
+      longMinutes: 50,
+      breakMinutes: 10,
+      soundNotificationsEnabled: false,
+      browserNotificationsEnabled: true,
+    });
+    expect(localStorage.getItem('pomodoro-settings')).toBe(
+      JSON.stringify({
+        shortMinutes: 25,
+        longMinutes: 50,
+        breakMinutes: 10,
+        soundNotificationsEnabled: false,
+        browserNotificationsEnabled: true,
       })
     );
   });
@@ -65,6 +95,31 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 20,
       longMinutes: 45,
       breakMinutes: 8,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
+    });
+  });
+
+  it('should load saved notification settings from localStorage', () => {
+    localStorage.setItem(
+      'pomodoro-settings',
+      JSON.stringify({
+        shortMinutes: 20,
+        longMinutes: 45,
+        breakMinutes: 8,
+        soundNotificationsEnabled: false,
+        browserNotificationsEnabled: true,
+      })
+    );
+
+    const loadedService = new PomodoroConfigService();
+
+    expect(loadedService.getSettings()).toEqual({
+      shortMinutes: 20,
+      longMinutes: 45,
+      breakMinutes: 8,
+      soundNotificationsEnabled: false,
+      browserNotificationsEnabled: true,
     });
   });
 
@@ -81,6 +136,8 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      soundNotificationsEnabled: true,
+      browserNotificationsEnabled: false,
     });
   });
 });
