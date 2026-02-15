@@ -22,7 +22,7 @@
       {{ dailyPomodoroProgressMessage }}
     </p>
     <app-timer-controls
-      (startClicked)="pomodoroTimer.start()"
+      (startClicked)="onStartClicked()"
       (pauseClicked)="pomodoroTimer.pause()"
       (resetClicked)="pomodoroTimer.reset()"
     ></app-timer-controls>

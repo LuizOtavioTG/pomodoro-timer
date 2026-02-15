@@ -7,17 +7,31 @@ import {
 
 import { PomodoroContainer } from './pomodoro-container';
 import { PomodoroConfigService } from '../services/pomodoro-config';
+import { PomodoroSoundNotificationService } from '../services/pomodoro-sound-notification';
 
 describe('PomodoroContainer', () => {
   let component: PomodoroContainer;
   let fixture: ComponentFixture<PomodoroContainer>;
   let configService: PomodoroConfigService;
+  let soundNotificationService: jasmine.SpyObj<PomodoroSoundNotificationService>;
 
   beforeEach(async () => {
     localStorage.clear();
+    soundNotificationService =
+      jasmine.createSpyObj<PomodoroSoundNotificationService>(
+        'PomodoroSoundNotificationService',
+        ['prepare', 'playSessionEndAlert']
+      );
+    soundNotificationService.playSessionEndAlert.and.resolveTo();
 
     await TestBed.configureTestingModule({
-      imports: [PomodoroContainer]
+      imports: [PomodoroContainer],
+      providers: [
+        {
+          provide: PomodoroSoundNotificationService,
+          useValue: soundNotificationService,
+        },
+      ],
     })
     .compileComponents();
 
@@ -68,6 +82,36 @@ describe('PomodoroContainer', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
       .toContain('1 pomodoro concluido hoje');
+  }));
+
+  it('should prepare sound before starting the timer from the controls', () => {
+    spyOn(component.pomodoroTimer, 'start');
+
+    component.onStartClicked();
+
+    expect(soundNotificationService.prepare).toHaveBeenCalled();
+    expect(component.pomodoroTimer.start).toHaveBeenCalled();
+  });
+
+  it('should play a sound when a session ends and sound notifications are enabled', fakeAsync(() => {
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(soundNotificationService.playSessionEndAlert).toHaveBeenCalled();
+  }));
+
+  it('should not play a sound when sound notifications are disabled', fakeAsync(() => {
+    configService.updateSettings({
+      soundNotificationsEnabled: false,
+    });
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(soundNotificationService.playSessionEndAlert).not.toHaveBeenCalled();
   }));
 
   it('should load the current settings when opening the modal', () => {

@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TimerDisplay } from "./timer-display/timer-display";
 import { SessionSelector } from "./session-selector/session-selector";
 import { TimerControls } from "./timer-controls/timer-controls";
@@ -8,6 +9,7 @@ import {
   PomodoroSettings,
 } from '../services/pomodoro-config';
 import { PomodoroTimerService } from '../services/pomodoro-timer';
+import { PomodoroSoundNotificationService } from '../services/pomodoro-sound-notification';
 import { ModalComponent } from '../shared/modal/modal';
 import { SettingsFormComponent } from './settings-form/settings-form';
 
@@ -26,11 +28,19 @@ import { SettingsFormComponent } from './settings-form/settings-form';
 })
 export class PomodoroContainer {
   private readonly pomodoroConfig = inject(PomodoroConfigService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly soundNotification = inject(PomodoroSoundNotificationService);
 
   isSettingsModalOpen = false;
   settingsForm: PomodoroSettings = this.createSettingsSnapshot();
 
-  constructor(public pomodoroTimer: PomodoroTimerService) {}
+  constructor(public pomodoroTimer: PomodoroTimerService) {
+    this.pomodoroTimer.sessionCompleted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.playSessionEndSound();
+      });
+  }
 
   get dailyPomodoroProgressMessage(): string {
     const completedPomodoros = this.pomodoroTimer.completedPomodorosToday;
@@ -48,6 +58,11 @@ export class PomodoroContainer {
 
   onSessionSelected(sessionType: PomodoroSessionType): void {
     this.pomodoroTimer.selectSession(sessionType);
+  }
+
+  onStartClicked(): void {
+    this.soundNotification.prepare();
+    this.pomodoroTimer.start();
   }
 
   openSettingsModal(): void {
@@ -87,6 +102,14 @@ export class PomodoroContainer {
 
   private createSettingsSnapshot(): PomodoroSettings {
     return { ...this.pomodoroConfig.getSettings() };
+  }
+
+  private playSessionEndSound(): void {
+    if (!this.pomodoroConfig.getSettings().soundNotificationsEnabled) {
+      return;
+    }
+
+    void this.soundNotification.playSessionEndAlert();
   }
 
   private isValidDuration(value: number): boolean {
