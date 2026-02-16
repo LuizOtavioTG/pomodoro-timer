@@ -79,12 +79,13 @@
     <label class="settings-toggle">
       <span>
         <span class="settings-label">Notificacao do navegador</span>
-        <span class="settings-help">Mostra um aviso fora da aba quando permitido.</span>
+        <span class="settings-help">{{ getBrowserNotificationHelpText() }}</span>
       </span>
       <input
         type="checkbox"
         class="settings-checkbox"
         [ngModel]="settings.browserNotificationsEnabled"
+        [disabled]="isBrowserNotificationToggleDisabled()"
         (ngModelChange)="updateNotificationSetting('browserNotificationsEnabled', $event)"
       />
     </label>

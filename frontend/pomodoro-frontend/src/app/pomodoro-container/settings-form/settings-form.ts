@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { BrowserNotificationPermissionStatus } from '../../services/pomodoro-browser-notification';
 import { PomodoroSettings } from '../../services/pomodoro-config';
 
 type PomodoroDurationSettingKey =
@@ -21,8 +22,12 @@ type PomodoroNotificationSettingKey =
 })
 export class SettingsFormComponent {
   @Input({ required: true }) settings!: PomodoroSettings;
+  @Input({ required: true })
+  browserNotificationPermissionStatus!: BrowserNotificationPermissionStatus;
 
   @Output() settingsChange = new EventEmitter<PomodoroSettings>();
+  @Output() browserNotificationPermissionRequested =
+    new EventEmitter<void>();
 
   readonly minMinutes = 1;
   readonly maxMinutes = 120;
@@ -45,10 +50,34 @@ export class SettingsFormComponent {
     key: PomodoroNotificationSettingKey,
     enabled: boolean
   ): void {
+    if (key === 'browserNotificationsEnabled' && enabled) {
+      this.browserNotificationPermissionRequested.emit();
+      return;
+    }
+
     this.settingsChange.emit({
       ...this.settings,
       [key]: enabled,
     });
+  }
+
+  isBrowserNotificationToggleDisabled(): boolean {
+    return this.browserNotificationPermissionStatus === 'unsupported'
+      || this.browserNotificationPermissionStatus === 'denied';
+  }
+
+  getBrowserNotificationHelpText(): string {
+    switch (this.browserNotificationPermissionStatus) {
+      case 'granted':
+        return 'Mostra um aviso fora da aba quando permitido.';
+      case 'denied':
+        return 'Permissao bloqueada nas configuracoes do navegador.';
+      case 'unsupported':
+        return 'Seu navegador nao suporta notificacoes.';
+      case 'default':
+      default:
+        return 'Ao ativar, o navegador pedira permissao.';
+    }
   }
 
   isFormValid(): boolean {

@@ -4,6 +4,10 @@ import { TimerDisplay } from "./timer-display/timer-display";
 import { SessionSelector } from "./session-selector/session-selector";
 import { TimerControls } from "./timer-controls/timer-controls";
 import {
+  BrowserNotificationPermissionStatus,
+  PomodoroBrowserNotificationService,
+} from '../services/pomodoro-browser-notification';
+import {
   PomodoroConfigService,
   PomodoroSessionType,
   PomodoroSettings,
@@ -30,9 +34,13 @@ export class PomodoroContainer {
   private readonly pomodoroConfig = inject(PomodoroConfigService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly soundNotification = inject(PomodoroSoundNotificationService);
+  private readonly browserNotification =
+    inject(PomodoroBrowserNotificationService);
 
   isSettingsModalOpen = false;
   settingsForm: PomodoroSettings = this.createSettingsSnapshot();
+  browserNotificationPermissionStatus: BrowserNotificationPermissionStatus =
+    this.browserNotification.getPermissionStatus();
 
   constructor(public pomodoroTimer: PomodoroTimerService) {
     this.pomodoroTimer.sessionCompleted$
@@ -66,6 +74,8 @@ export class PomodoroContainer {
   }
 
   openSettingsModal(): void {
+    this.browserNotificationPermissionStatus =
+      this.browserNotification.getPermissionStatus();
     this.settingsForm = this.createSettingsSnapshot();
     this.isSettingsModalOpen = true;
   }
@@ -98,6 +108,16 @@ export class PomodoroContainer {
 
   onSettingsFormChange(settings: PomodoroSettings): void {
     this.settingsForm = settings;
+  }
+
+  async requestBrowserNotificationPermission(): Promise<void> {
+    this.browserNotificationPermissionStatus =
+      await this.browserNotification.requestPermission();
+    this.settingsForm = {
+      ...this.settingsForm,
+      browserNotificationsEnabled:
+        this.browserNotificationPermissionStatus === 'granted',
+    };
   }
 
   private createSettingsSnapshot(): PomodoroSettings {

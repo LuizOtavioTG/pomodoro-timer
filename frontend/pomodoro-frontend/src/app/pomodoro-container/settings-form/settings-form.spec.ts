@@ -19,6 +19,7 @@ describe('SettingsFormComponent', () => {
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     };
+    component.browserNotificationPermissionStatus = 'default';
     fixture.detectChanges();
   });
 
@@ -40,18 +41,49 @@ describe('SettingsFormComponent', () => {
     });
   });
 
-  it('should emit updated settings when a notification setting changes', () => {
+  it('should emit updated settings when sound notifications change', () => {
     const emitSpy = spyOn(component.settingsChange, 'emit');
 
-    component.updateNotificationSetting('browserNotificationsEnabled', true);
+    component.updateNotificationSetting('soundNotificationsEnabled', false);
 
     expect(emitSpy).toHaveBeenCalledWith({
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
-      soundNotificationsEnabled: true,
-      browserNotificationsEnabled: true,
+      soundNotificationsEnabled: false,
+      browserNotificationsEnabled: false,
     });
+  });
+
+  it('should request browser notification permission before enabling it', () => {
+    const settingsEmitSpy = spyOn(component.settingsChange, 'emit');
+    const permissionEmitSpy = spyOn(
+      component.browserNotificationPermissionRequested,
+      'emit'
+    );
+
+    component.updateNotificationSetting('browserNotificationsEnabled', true);
+
+    expect(permissionEmitSpy).toHaveBeenCalled();
+    expect(settingsEmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should disable browser notifications toggle when permission is denied', () => {
+    component.browserNotificationPermissionStatus = 'denied';
+
+    expect(component.isBrowserNotificationToggleDisabled()).toBeTrue();
+    expect(component.getBrowserNotificationHelpText()).toBe(
+      'Permissao bloqueada nas configuracoes do navegador.'
+    );
+  });
+
+  it('should disable browser notifications toggle when notifications are unsupported', () => {
+    component.browserNotificationPermissionStatus = 'unsupported';
+
+    expect(component.isBrowserNotificationToggleDisabled()).toBeTrue();
+    expect(component.getBrowserNotificationHelpText()).toBe(
+      'Seu navegador nao suporta notificacoes.'
+    );
   });
 
   it('should invalidate values that are zero or negative', () => {

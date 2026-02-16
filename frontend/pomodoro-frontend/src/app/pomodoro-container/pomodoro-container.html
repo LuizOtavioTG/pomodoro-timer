@@ -37,7 +37,9 @@
   <div modalBody>
     <app-settings-form
       [settings]="settingsForm"
+      [browserNotificationPermissionStatus]="browserNotificationPermissionStatus"
       (settingsChange)="onSettingsFormChange($event)"
+      (browserNotificationPermissionRequested)="requestBrowserNotificationPermission()"
     ></app-settings-form>
   </div>
 

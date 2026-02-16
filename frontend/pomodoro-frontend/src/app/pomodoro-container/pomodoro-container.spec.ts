@@ -6,6 +6,7 @@ import {
 } from '@angular/core/testing';
 
 import { PomodoroContainer } from './pomodoro-container';
+import { PomodoroBrowserNotificationService } from '../services/pomodoro-browser-notification';
 import { PomodoroConfigService } from '../services/pomodoro-config';
 import { PomodoroSoundNotificationService } from '../services/pomodoro-sound-notification';
 
@@ -14,6 +15,8 @@ describe('PomodoroContainer', () => {
   let fixture: ComponentFixture<PomodoroContainer>;
   let configService: PomodoroConfigService;
   let soundNotificationService: jasmine.SpyObj<PomodoroSoundNotificationService>;
+  let browserNotificationService:
+    jasmine.SpyObj<PomodoroBrowserNotificationService>;
 
   beforeEach(async () => {
     localStorage.clear();
@@ -23,10 +26,21 @@ describe('PomodoroContainer', () => {
         ['prepare', 'playSessionEndAlert']
       );
     soundNotificationService.playSessionEndAlert.and.resolveTo();
+    browserNotificationService =
+      jasmine.createSpyObj<PomodoroBrowserNotificationService>(
+        'PomodoroBrowserNotificationService',
+        ['getPermissionStatus', 'requestPermission']
+      );
+    browserNotificationService.getPermissionStatus.and.returnValue('default');
+    browserNotificationService.requestPermission.and.resolveTo('granted');
 
     await TestBed.configureTestingModule({
       imports: [PomodoroContainer],
       providers: [
+        {
+          provide: PomodoroBrowserNotificationService,
+          useValue: browserNotificationService,
+        },
         {
           provide: PomodoroSoundNotificationService,
           useValue: soundNotificationService,
@@ -131,6 +145,38 @@ describe('PomodoroContainer', () => {
       browserNotificationsEnabled: false,
     });
   });
+
+  it('should refresh browser notification permission when opening settings', () => {
+    browserNotificationService.getPermissionStatus.and.returnValue('denied');
+
+    component.openSettingsModal();
+
+    expect(component.browserNotificationPermissionStatus).toBe('denied');
+  });
+
+  it('should enable browser notifications when permission is granted', fakeAsync(() => {
+    browserNotificationService.requestPermission.and.resolveTo('granted');
+
+    component.requestBrowserNotificationPermission();
+    tick();
+
+    expect(component.browserNotificationPermissionStatus).toBe('granted');
+    expect(component.settingsForm.browserNotificationsEnabled).toBeTrue();
+  }));
+
+  it('should keep browser notifications disabled when permission is denied', fakeAsync(() => {
+    browserNotificationService.requestPermission.and.resolveTo('denied');
+    component.settingsForm = {
+      ...component.settingsForm,
+      browserNotificationsEnabled: false,
+    };
+
+    component.requestBrowserNotificationPermission();
+    tick();
+
+    expect(component.browserNotificationPermissionStatus).toBe('denied');
+    expect(component.settingsForm.browserNotificationsEnabled).toBeFalse();
+  }));
 
   it('should restore the default settings in the form', () => {
     configService.updateSettings({
