@@ -12,7 +12,10 @@ import {
   PomodoroSessionType,
   PomodoroSettings,
 } from '../services/pomodoro-config';
-import { PomodoroTimerService } from '../services/pomodoro-timer';
+import {
+  PomodoroSessionCompletion,
+  PomodoroTimerService,
+} from '../services/pomodoro-timer';
 import { PomodoroSoundNotificationService } from '../services/pomodoro-sound-notification';
 import { ModalComponent } from '../shared/modal/modal';
 import { SettingsFormComponent } from './settings-form/settings-form';
@@ -45,8 +48,9 @@ export class PomodoroContainer {
   constructor(public pomodoroTimer: PomodoroTimerService) {
     this.pomodoroTimer.sessionCompleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
+      .subscribe((sessionCompletion) => {
         this.playSessionEndSound();
+        this.showSessionEndBrowserNotification(sessionCompletion);
       });
   }
 
@@ -130,6 +134,39 @@ export class PomodoroContainer {
     }
 
     void this.soundNotification.playSessionEndAlert();
+  }
+
+  private showSessionEndBrowserNotification(
+    sessionCompletion: PomodoroSessionCompletion
+  ): void {
+    if (!this.pomodoroConfig.getSettings().browserNotificationsEnabled) {
+      return;
+    }
+
+    this.browserNotification.showNotification(
+      this.getSessionEndNotificationTitle(sessionCompletion.completedSession),
+      this.getSessionEndNotificationBody(sessionCompletion.nextSession)
+    );
+  }
+
+  private getSessionEndNotificationTitle(
+    completedSession: PomodoroSessionType
+  ): string {
+    if (completedSession === 'break') {
+      return 'Pausa finalizada';
+    }
+
+    return 'Pomodoro finalizado';
+  }
+
+  private getSessionEndNotificationBody(
+    nextSession: PomodoroSessionType
+  ): string {
+    if (nextSession === 'break') {
+      return 'Hora de fazer uma pausa.';
+    }
+
+    return 'Hora de voltar ao foco.';
   }
 
   private isValidDuration(value: number): boolean {

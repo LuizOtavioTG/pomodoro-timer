@@ -29,7 +29,7 @@ describe('PomodoroContainer', () => {
     browserNotificationService =
       jasmine.createSpyObj<PomodoroBrowserNotificationService>(
         'PomodoroBrowserNotificationService',
-        ['getPermissionStatus', 'requestPermission']
+        ['getPermissionStatus', 'requestPermission', 'showNotification']
       );
     browserNotificationService.getPermissionStatus.and.returnValue('default');
     browserNotificationService.requestPermission.and.resolveTo('granted');
@@ -126,6 +126,46 @@ describe('PomodoroContainer', () => {
     tick(1000);
 
     expect(soundNotificationService.playSessionEndAlert).not.toHaveBeenCalled();
+  }));
+
+  it('should show a browser notification when a focus session ends and browser notifications are enabled', fakeAsync(() => {
+    configService.updateSettings({
+      browserNotificationsEnabled: true,
+    });
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(browserNotificationService.showNotification).toHaveBeenCalledWith(
+      'Pomodoro finalizado',
+      'Hora de fazer uma pausa.'
+    );
+  }));
+
+  it('should show a browser notification when a break session ends and browser notifications are enabled', fakeAsync(() => {
+    configService.updateSettings({
+      browserNotificationsEnabled: true,
+    });
+    component.pomodoroTimer.selectSession('break');
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(browserNotificationService.showNotification).toHaveBeenCalledWith(
+      'Pausa finalizada',
+      'Hora de voltar ao foco.'
+    );
+  }));
+
+  it('should not show a browser notification when browser notifications are disabled', fakeAsync(() => {
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(browserNotificationService.showNotification).not.toHaveBeenCalled();
   }));
 
   it('should load the current settings when opening the modal', () => {
