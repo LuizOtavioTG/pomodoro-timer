@@ -80,6 +80,24 @@ export class SettingsFormComponent {
     }
   }
 
+  getBrowserNotificationPermissionLabel(): string {
+    switch (this.browserNotificationPermissionStatus) {
+      case 'granted':
+        return 'Permitida';
+      case 'denied':
+        return 'Bloqueada';
+      case 'unsupported':
+        return 'Indisponivel';
+      case 'default':
+      default:
+        return 'Nao solicitada';
+    }
+  }
+
+  getBrowserNotificationPermissionClass(): string {
+    return `permission-${this.browserNotificationPermissionStatus}`;
+  }
+
   isFormValid(): boolean {
     return this.getShortError() === null
       && this.getLongError() === null

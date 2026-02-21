@@ -95,10 +95,48 @@
   gap: 4px;
 }
 
+.settings-label-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .settings-help {
   color: #64748b;
   font-size: 0.88rem;
   line-height: 1.4;
+}
+
+.settings-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.permission-granted {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.permission-default {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.permission-denied {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.permission-unsupported {
+  color: #475569;
+  background: #e2e8f0;
 }
 
 .settings-checkbox {
@@ -106,4 +144,8 @@
   height: 20px;
   flex: 0 0 auto;
   accent-color: #2563eb;
+}
+
+.settings-checkbox:disabled {
+  cursor: not-allowed;
 }

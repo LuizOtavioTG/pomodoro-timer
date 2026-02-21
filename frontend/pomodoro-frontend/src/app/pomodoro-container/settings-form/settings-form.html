@@ -78,7 +78,15 @@
 
     <label class="settings-toggle">
       <span>
-        <span class="settings-label">Notificacao do navegador</span>
+        <span class="settings-label-row">
+          <span class="settings-label">Notificacao do navegador</span>
+          <span
+            class="settings-status"
+            [ngClass]="getBrowserNotificationPermissionClass()"
+          >
+            {{ getBrowserNotificationPermissionLabel() }}
+          </span>
+        </span>
         <span class="settings-help">{{ getBrowserNotificationHelpText() }}</span>
       </span>
       <input

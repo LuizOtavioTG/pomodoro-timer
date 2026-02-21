@@ -72,6 +72,10 @@ describe('SettingsFormComponent', () => {
     component.browserNotificationPermissionStatus = 'denied';
 
     expect(component.isBrowserNotificationToggleDisabled()).toBeTrue();
+    expect(component.getBrowserNotificationPermissionLabel()).toBe('Bloqueada');
+    expect(component.getBrowserNotificationPermissionClass()).toBe(
+      'permission-denied'
+    );
     expect(component.getBrowserNotificationHelpText()).toBe(
       'Permissao bloqueada nas configuracoes do navegador.'
     );
@@ -81,8 +85,36 @@ describe('SettingsFormComponent', () => {
     component.browserNotificationPermissionStatus = 'unsupported';
 
     expect(component.isBrowserNotificationToggleDisabled()).toBeTrue();
+    expect(component.getBrowserNotificationPermissionLabel()).toBe(
+      'Indisponivel'
+    );
+    expect(component.getBrowserNotificationPermissionClass()).toBe(
+      'permission-unsupported'
+    );
     expect(component.getBrowserNotificationHelpText()).toBe(
       'Seu navegador nao suporta notificacoes.'
+    );
+  });
+
+  it('should show the browser notification permission as not requested by default', () => {
+    expect(component.getBrowserNotificationPermissionLabel()).toBe(
+      'Nao solicitada'
+    );
+    expect(component.getBrowserNotificationPermissionClass()).toBe(
+      'permission-default'
+    );
+    expect(component.getBrowserNotificationHelpText()).toBe(
+      'Ao ativar, o navegador pedira permissao.'
+    );
+  });
+
+  it('should show granted browser notification permission status', () => {
+    component.browserNotificationPermissionStatus = 'granted';
+
+    expect(component.isBrowserNotificationToggleDisabled()).toBeFalse();
+    expect(component.getBrowserNotificationPermissionLabel()).toBe('Permitida');
+    expect(component.getBrowserNotificationPermissionClass()).toBe(
+      'permission-granted'
     );
   });
 
