@@ -132,6 +132,7 @@ describe('PomodoroContainer', () => {
     configService.updateSettings({
       browserNotificationsEnabled: true,
     });
+    browserNotificationService.getPermissionStatus.and.returnValue('granted');
     component.pomodoroTimer.remainingSeconds = 1;
 
     component.pomodoroTimer.start();
@@ -147,6 +148,7 @@ describe('PomodoroContainer', () => {
     configService.updateSettings({
       browserNotificationsEnabled: true,
     });
+    browserNotificationService.getPermissionStatus.and.returnValue('granted');
     component.pomodoroTimer.selectSession('break');
     component.pomodoroTimer.remainingSeconds = 1;
 
@@ -166,6 +168,20 @@ describe('PomodoroContainer', () => {
     tick(1000);
 
     expect(browserNotificationService.showNotification).not.toHaveBeenCalled();
+  }));
+
+  it('should not show a browser notification when permission is no longer granted', fakeAsync(() => {
+    configService.updateSettings({
+      browserNotificationsEnabled: true,
+    });
+    browserNotificationService.getPermissionStatus.and.returnValue('denied');
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(browserNotificationService.showNotification).not.toHaveBeenCalled();
+    expect(configService.getSettings().browserNotificationsEnabled).toBeFalse();
   }));
 
   it('should load the current settings when opening the modal', () => {
@@ -192,6 +208,18 @@ describe('PomodoroContainer', () => {
     component.openSettingsModal();
 
     expect(component.browserNotificationPermissionStatus).toBe('denied');
+  });
+
+  it('should disable saved browser notifications when opening settings after permission is denied', () => {
+    configService.updateSettings({
+      browserNotificationsEnabled: true,
+    });
+    browserNotificationService.getPermissionStatus.and.returnValue('denied');
+
+    component.openSettingsModal();
+
+    expect(component.settingsForm.browserNotificationsEnabled).toBeFalse();
+    expect(configService.getSettings().browserNotificationsEnabled).toBeFalse();
   });
 
   it('should enable browser notifications when permission is granted', fakeAsync(() => {

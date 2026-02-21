@@ -93,6 +93,53 @@ describe('PomodoroTimerService', () => {
     ]);
   }));
 
+  it('should emit a completed session only once after reaching zero', fakeAsync(() => {
+    const sessionCompletions: unknown[] = [];
+    service.sessionCompleted$.subscribe((sessionCompletion) => {
+      sessionCompletions.push(sessionCompletion);
+    });
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(3000);
+
+    expect(sessionCompletions.length).toBe(1);
+    expect(service.completedPomodorosToday).toBe(1);
+  }));
+
+  it('should not emit a completed session when reset before reaching zero', fakeAsync(() => {
+    const sessionCompletions: unknown[] = [];
+    service.sessionCompleted$.subscribe((sessionCompletion) => {
+      sessionCompletions.push(sessionCompletion);
+    });
+    service.remainingSeconds = 1;
+
+    service.start();
+    service.reset();
+    tick(1000);
+
+    expect(sessionCompletions).toEqual([]);
+    expect(service.completedPomodorosToday).toBe(0);
+    expect(service.formattedTime).toBe('25:00');
+  }));
+
+  it('should not emit a completed session when changing session before reaching zero', fakeAsync(() => {
+    const sessionCompletions: unknown[] = [];
+    service.sessionCompleted$.subscribe((sessionCompletion) => {
+      sessionCompletions.push(sessionCompletion);
+    });
+    service.remainingSeconds = 1;
+
+    service.start();
+    service.selectSession('break');
+    tick(1000);
+
+    expect(sessionCompletions).toEqual([]);
+    expect(service.completedPomodorosToday).toBe(0);
+    expect(service.selectedSession).toBe('break');
+    expect(service.formattedTime).toBe('10:00');
+  }));
+
   it('should save completed focus sessions to local storage', fakeAsync(() => {
     service.remainingSeconds = 1;
 

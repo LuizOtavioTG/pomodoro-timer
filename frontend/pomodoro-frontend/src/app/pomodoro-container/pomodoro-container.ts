@@ -81,6 +81,7 @@ export class PomodoroContainer {
     this.browserNotificationPermissionStatus =
       this.browserNotification.getPermissionStatus();
     this.settingsForm = this.createSettingsSnapshot();
+    this.disableBrowserNotificationsWhenPermissionIsUnavailable();
     this.isSettingsModalOpen = true;
   }
 
@@ -122,6 +123,7 @@ export class PomodoroContainer {
       browserNotificationsEnabled:
         this.browserNotificationPermissionStatus === 'granted',
     };
+    this.disableBrowserNotificationsWhenPermissionIsUnavailable();
   }
 
   private createSettingsSnapshot(): PomodoroSettings {
@@ -140,6 +142,14 @@ export class PomodoroContainer {
     sessionCompletion: PomodoroSessionCompletion
   ): void {
     if (!this.pomodoroConfig.getSettings().browserNotificationsEnabled) {
+      return;
+    }
+
+    this.browserNotificationPermissionStatus =
+      this.browserNotification.getPermissionStatus();
+
+    if (this.browserNotificationPermissionStatus !== 'granted') {
+      this.disableBrowserNotificationsWhenPermissionIsUnavailable();
       return;
     }
 
@@ -167,6 +177,27 @@ export class PomodoroContainer {
     }
 
     return 'Hora de voltar ao foco.';
+  }
+
+  private disableBrowserNotificationsWhenPermissionIsUnavailable(): void {
+    const browserNotificationsEnabled =
+      this.settingsForm.browserNotificationsEnabled
+      || this.pomodoroConfig.getSettings().browserNotificationsEnabled;
+
+    if (
+      this.browserNotificationPermissionStatus === 'granted'
+      || !browserNotificationsEnabled
+    ) {
+      return;
+    }
+
+    this.settingsForm = {
+      ...this.settingsForm,
+      browserNotificationsEnabled: false,
+    };
+    this.pomodoroConfig.updateSettings({
+      browserNotificationsEnabled: false,
+    });
   }
 
   private isValidDuration(value: number): boolean {
