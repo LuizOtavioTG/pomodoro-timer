@@ -31,8 +31,7 @@ export class PomodoroSoundNotificationService {
       }
 
       const startTime = audioContext.currentTime;
-      this.scheduleTone(audioContext, startTime, 880, 0.16);
-      this.scheduleTone(audioContext, startTime + 0.22, 1175, 0.22);
+      this.scheduleAlarmPattern(audioContext, startTime);
     } catch {
       return;
     }
@@ -55,6 +54,24 @@ export class PomodoroSoundNotificationService {
     return this.audioContext;
   }
 
+  private scheduleAlarmPattern(
+    audioContext: AudioContext,
+    startTime: number
+  ): void {
+    const alarmBursts = 6;
+    const burstInterval = 0.24;
+
+    for (let index = 0; index < alarmBursts; index++) {
+      const frequency = index % 2 === 0 ? 740 : 980;
+      this.scheduleTone(
+        audioContext,
+        startTime + index * burstInterval,
+        frequency,
+        0.18
+      );
+    }
+  }
+
   private scheduleTone(
     audioContext: AudioContext,
     startTime: number,
@@ -65,10 +82,11 @@ export class PomodoroSoundNotificationService {
     const gain = audioContext.createGain();
     const endTime = startTime + duration;
 
-    oscillator.type = 'sine';
+    oscillator.type = 'square';
     oscillator.frequency.setValueAtTime(frequency, startTime);
     gain.gain.setValueAtTime(0.0001, startTime);
-    gain.gain.exponentialRampToValueAtTime(0.18, startTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.12, startTime + 0.01);
+    gain.gain.setValueAtTime(0.12, endTime - 0.04);
     gain.gain.exponentialRampToValueAtTime(0.0001, endTime);
 
     oscillator.connect(gain);
