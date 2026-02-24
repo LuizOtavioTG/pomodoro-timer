@@ -98,13 +98,49 @@ describe('PomodoroContainer', () => {
       .toContain('1 pomodoro concluido hoje');
   }));
 
-  it('should prepare sound before starting the timer from the controls', () => {
+  it('should prepare sound before starting the timer from the unified control', () => {
     spyOn(component.pomodoroTimer, 'start');
 
-    component.onStartClicked();
+    component.onTimerToggleClicked();
 
     expect(soundNotificationService.prepare).toHaveBeenCalled();
     expect(component.pomodoroTimer.start).toHaveBeenCalled();
+  });
+
+  it('should pause the timer from the unified control when it is running', () => {
+    spyOn(component.pomodoroTimer, 'pause');
+    component.pomodoroTimer.isRunning = true;
+
+    component.onTimerToggleClicked();
+
+    expect(soundNotificationService.prepare).not.toHaveBeenCalled();
+    expect(component.pomodoroTimer.pause).toHaveBeenCalled();
+  });
+
+  it('should not open settings while the timer is running', () => {
+    component.pomodoroTimer.isRunning = true;
+
+    component.openSettingsModal();
+
+    expect(component.isSettingsModalOpen).toBeFalse();
+  });
+
+  it('should not change session while the timer is running', () => {
+    spyOn(component.pomodoroTimer, 'selectSession');
+    component.pomodoroTimer.isRunning = true;
+
+    component.onSessionSelected('long');
+
+    expect(component.pomodoroTimer.selectSession).not.toHaveBeenCalled();
+  });
+
+  it('should not reset while the timer is running', () => {
+    spyOn(component.pomodoroTimer, 'reset');
+    component.pomodoroTimer.isRunning = true;
+
+    component.onResetClicked();
+
+    expect(component.pomodoroTimer.reset).not.toHaveBeenCalled();
   });
 
   it('should play a sound when a session ends and sound notifications are enabled', fakeAsync(() => {

@@ -65,6 +65,25 @@ describe('PomodoroTimerService', () => {
     expect(service.completedPomodorosToday).toBe(1);
   }));
 
+  it('should expose when the timer is running', fakeAsync(() => {
+    service.start();
+
+    expect(service.isRunning).toBeTrue();
+
+    service.pause();
+
+    expect(service.isRunning).toBeFalse();
+  }));
+
+  it('should expose that the timer stopped after a session ends', fakeAsync(() => {
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(service.isRunning).toBeFalse();
+  }));
+
   it('should move from a completed short focus session to a break', fakeAsync(() => {
     service.remainingSeconds = 1;
 

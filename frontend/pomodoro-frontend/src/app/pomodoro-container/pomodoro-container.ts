@@ -69,15 +69,36 @@ export class PomodoroContainer {
   }
 
   onSessionSelected(sessionType: PomodoroSessionType): void {
+    if (this.pomodoroTimer.isRunning) {
+      return;
+    }
+
     this.pomodoroTimer.selectSession(sessionType);
   }
 
-  onStartClicked(): void {
+  onTimerToggleClicked(): void {
+    if (this.pomodoroTimer.isRunning) {
+      this.pomodoroTimer.pause();
+      return;
+    }
+
     this.soundNotification.prepare();
     this.pomodoroTimer.start();
   }
 
+  onResetClicked(): void {
+    if (this.pomodoroTimer.isRunning) {
+      return;
+    }
+
+    this.pomodoroTimer.reset();
+  }
+
   openSettingsModal(): void {
+    if (this.pomodoroTimer.isRunning) {
+      return;
+    }
+
     this.browserNotificationPermissionStatus =
       this.browserNotification.getPermissionStatus();
     this.settingsForm = this.createSettingsSnapshot();

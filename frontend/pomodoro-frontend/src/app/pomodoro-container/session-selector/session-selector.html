@@ -2,6 +2,7 @@
   <button
     class="session-button"
     [class.active]="selectedSession === 'short'"
+    [disabled]="isDisabled"
     (click)="selectSession('short')"
   >
     Curto
@@ -9,6 +10,7 @@
   <button
     class="session-button"
     [class.active]="selectedSession === 'long'"
+    [disabled]="isDisabled"
     (click)="selectSession('long')"
   >
     Longo
@@ -16,6 +18,7 @@
   <button
     class="session-button"
     [class.active]="selectedSession === 'break'"
+    [disabled]="isDisabled"
     (click)="selectSession('break')"
   >
     Descanso

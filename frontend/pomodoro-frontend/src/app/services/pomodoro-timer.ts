@@ -30,6 +30,7 @@ export class PomodoroTimerService {
   remainingSeconds = this.getDurationInSeconds('short');
   formattedTime = this.formatTime(this.remainingSeconds);
   completedPomodorosToday = this.loadCompletedPomodorosToday();
+  isRunning = false;
   sessionCompleted$ = this.sessionCompletedSubject.asObservable();
 
   private timerSubscription?: Subscription;
@@ -45,6 +46,7 @@ export class PomodoroTimerService {
       return;
     }
 
+    this.isRunning = true;
     this.timerSubscription = interval(1000).subscribe(() => {
       if (this.remainingSeconds > 0) {
         this.remainingSeconds--;
@@ -60,6 +62,7 @@ export class PomodoroTimerService {
   pause(): void {
     this.timerSubscription?.unsubscribe();
     this.timerSubscription = undefined;
+    this.isRunning = false;
   }
 
   reset(): void {

@@ -4,6 +4,7 @@
       type="button"
       class="settings-button"
       aria-label="Abrir configuracoes"
+      [disabled]="pomodoroTimer.isRunning"
       (click)="openSettingsModal()"
     >
       ⚙
@@ -13,6 +14,7 @@
   <div class="pomodoro-container">
     <app-session-selector
       [selectedSession]="pomodoroTimer.selectedSession"
+      [isDisabled]="pomodoroTimer.isRunning"
       (sessionSelected)="onSessionSelected($event)"
     ></app-session-selector>
     <app-timer-display
@@ -22,9 +24,10 @@
       {{ dailyPomodoroProgressMessage }}
     </p>
     <app-timer-controls
-      (startClicked)="onStartClicked()"
-      (pauseClicked)="pomodoroTimer.pause()"
-      (resetClicked)="pomodoroTimer.reset()"
+      [isRunning]="pomodoroTimer.isRunning"
+      [isResetDisabled]="pomodoroTimer.isRunning"
+      (toggleClicked)="onTimerToggleClicked()"
+      (resetClicked)="onResetClicked()"
     ></app-timer-controls>
   </div>
 </div>

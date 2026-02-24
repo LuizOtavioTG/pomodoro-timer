@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-timer-controls',
@@ -8,7 +8,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrl: './timer-controls.scss',
 })
 export class TimerControls {
-  @Output() startClicked = new EventEmitter<void>();
-  @Output() pauseClicked = new EventEmitter<void>();
+  @Input() isRunning = false;
+  @Input() isResetDisabled = false;
+  @Output() toggleClicked = new EventEmitter<void>();
   @Output() resetClicked = new EventEmitter<void>();
 }

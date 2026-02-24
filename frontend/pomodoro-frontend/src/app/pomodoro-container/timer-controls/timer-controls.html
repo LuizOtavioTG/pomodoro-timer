@@ -1,5 +1,18 @@
 <div class="timer-controls">
-  <button class="control-button primary" (click)="startClicked.emit()">Iniciar</button>
-  <button class="control-button secondary" (click)="pauseClicked.emit()">Pausar</button>
-  <button class="control-button danger" (click)="resetClicked.emit()">Resetar</button>
+  <button
+    class="control-button primary"
+    type="button"
+    [attr.aria-label]="isRunning ? 'Pausar timer' : 'Iniciar timer'"
+    (click)="toggleClicked.emit()"
+  >
+    {{ isRunning ? 'Pausar' : 'Iniciar' }}
+  </button>
+  <button
+    class="control-button danger"
+    type="button"
+    [disabled]="isResetDisabled"
+    (click)="resetClicked.emit()"
+  >
+    Resetar
+  </button>
 </div>

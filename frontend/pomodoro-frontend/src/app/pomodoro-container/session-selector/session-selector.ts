@@ -10,9 +10,14 @@ import { PomodoroSessionType } from '../../services/pomodoro-config';
 })
 export class SessionSelector {
   @Input() selectedSession: PomodoroSessionType = 'short';
+  @Input() isDisabled = false;
   @Output() sessionSelected = new EventEmitter<PomodoroSessionType>();
 
   selectSession(sessionType: PomodoroSessionType): void {
+    if (this.isDisabled) {
+      return;
+    }
+
     this.sessionSelected.emit(sessionType);
   }
 }

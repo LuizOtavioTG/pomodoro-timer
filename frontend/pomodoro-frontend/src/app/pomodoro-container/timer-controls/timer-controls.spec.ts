@@ -21,11 +21,31 @@ describe('TimerControls', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit start when start button is triggered', () => {
-    spyOn(component.startClicked, 'emit');
+  it('should emit toggle when the main button is triggered', () => {
+    spyOn(component.toggleClicked, 'emit');
 
-    component.startClicked.emit();
+    component.toggleClicked.emit();
 
-    expect(component.startClicked.emit).toHaveBeenCalled();
+    expect(component.toggleClicked.emit).toHaveBeenCalled();
+  });
+
+  it('should render pause label while running', () => {
+    component.isRunning = true;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.control-button.primary')?.textContent)
+      .toContain('Pausar');
+  });
+
+  it('should disable reset when requested', () => {
+    component.isResetDisabled = true;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const resetButton = compiled.querySelector(
+      '.control-button.danger'
+    ) as HTMLButtonElement;
+    expect(resetButton.disabled).toBeTrue();
   });
 });

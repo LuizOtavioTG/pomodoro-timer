@@ -29,4 +29,13 @@ describe('SessionSelector', () => {
 
     expect(component.sessionSelected.emit).toHaveBeenCalledWith('long');
   });
+
+  it('should not emit the selected session when disabled', () => {
+    spyOn(component.sessionSelected, 'emit');
+    component.isDisabled = true;
+
+    component.selectSession('long');
+
+    expect(component.sessionSelected.emit).not.toHaveBeenCalled();
+  });
 });
