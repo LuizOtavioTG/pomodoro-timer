@@ -5,6 +5,7 @@
 .settings-description {
   margin: 0 0 20px;
   line-height: 1.6;
+  color: var(--color-muted);
 }
 
 .settings-form {
@@ -20,9 +21,9 @@
 }
 
 .settings-label {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #0f172a;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-deep-teal);
 }
 
 .settings-input-wrapper {
@@ -30,14 +31,14 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: #f8fafc;
+  background: rgba(242, 237, 213, 0.58);
 }
 
 .settings-input-wrapper:focus-within {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(242, 103, 22, 0.14);
 }
 
 .settings-input {
@@ -45,15 +46,15 @@
   border: none;
   outline: none;
   background: transparent;
-  color: #0f172a;
+  color: var(--color-deep-teal);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .settings-unit {
-  color: #64748b;
+  color: var(--color-muted);
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .settings-error {
@@ -72,10 +73,11 @@
 
 .settings-section-title {
   margin: 0;
-  color: #334155;
+  color: var(--color-secondary);
   font-size: 0.88rem;
   font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0;
 }
 
 .settings-toggle {
@@ -84,9 +86,9 @@
   justify-content: space-between;
   gap: 16px;
   padding: 12px 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  background: #f8fafc;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: rgba(242, 237, 213, 0.58);
 }
 
 .settings-toggle > span {
@@ -103,7 +105,7 @@
 }
 
 .settings-help {
-  color: #64748b;
+  color: var(--color-muted);
   font-size: 0.88rem;
   line-height: 1.4;
 }
@@ -120,30 +122,30 @@
 }
 
 .permission-granted {
-  color: #166534;
-  background: #dcfce7;
+  color: var(--color-secondary);
+  background: rgba(8, 74, 36, 0.14);
 }
 
 .permission-default {
-  color: #92400e;
-  background: #fef3c7;
+  color: #8a3d08;
+  background: rgba(242, 103, 22, 0.16);
 }
 
 .permission-denied {
-  color: #991b1b;
-  background: #fee2e2;
+  color: #9f2309;
+  background: rgba(231, 57, 13, 0.14);
 }
 
 .permission-unsupported {
-  color: #475569;
-  background: #e2e8f0;
+  color: var(--color-muted);
+  background: rgba(4, 74, 36, 0.08);
 }
 
 .settings-checkbox {
   width: 20px;
   height: 20px;
   flex: 0 0 auto;
-  accent-color: #2563eb;
+  accent-color: var(--color-primary);
 }
 
 .settings-checkbox:disabled {

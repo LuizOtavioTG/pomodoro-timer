@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(4, 38, 30, 0.52);
   backdrop-filter: blur(6px);
   z-index: 1000;
 }
@@ -19,8 +19,9 @@
   max-height: min(100vh - 48px, 720px);
   overflow: auto;
   border-radius: 24px;
-  background: #ffffff;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+  border: 1px solid var(--color-border);
+  background: var(--color-base-soft);
+  box-shadow: 0 24px 60px rgba(4, 38, 30, 0.24);
 }
 
 .modal-header {
@@ -35,7 +36,7 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-deep-teal);
 }
 
 .modal-close-button {
@@ -44,8 +45,8 @@
   height: 40px;
   border: none;
   border-radius: 999px;
-  background: #e2e8f0;
-  color: #0f172a;
+  background: rgba(4, 74, 36, 0.08);
+  color: var(--color-secondary);
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
@@ -53,7 +54,7 @@
 }
 
 .modal-close-button:hover {
-  background: #cbd5e1;
+  background: rgba(4, 74, 36, 0.14);
   transform: translateY(-1px);
 }
 
@@ -63,7 +64,7 @@
 
 .modal-body {
   padding: 20px 24px 0;
-  color: #334155;
+  color: var(--color-muted);
 }
 
 .modal-actions {

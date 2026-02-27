@@ -42,12 +42,12 @@
 
 .daily-pomodoro-count {
   margin: -8px 0 0;
-  border: 1px solid #bfdbfe;
+  border: 1px solid rgba(242, 103, 22, 0.28);
   border-radius: 999px;
-  background: #eff6ff;
-  color: #1e3a8a;
-  font-size: 0.95rem;
-  font-weight: 600;
+  background: rgba(242, 103, 22, 0.12);
+  color: var(--color-secondary);
+  font-size: 0.875rem;
+  font-weight: 700;
   line-height: 1.4;
   padding: 8px 14px;
   text-align: center;
@@ -56,18 +56,19 @@
 .settings-button,
 .modal-action-button {
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 12px 18px;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
   cursor: pointer;
   transition: transform 0.15s ease, background 0.2s ease,
     box-shadow 0.2s ease;
 }
 
 .settings-button {
-  background: #e2e8f0;
-  color: #0f172a;
+  border: 1px solid var(--color-border);
+  background: rgba(255, 248, 223, 0.76);
+  color: var(--color-secondary);
 }
 
 .settings-button:hover,
@@ -76,7 +77,7 @@
 }
 
 .settings-button:hover {
-  background: #cbd5e1;
+  background: rgba(242, 237, 213, 0.92);
 }
 
 .settings-button:disabled {
@@ -86,17 +87,17 @@
 }
 
 .settings-button:disabled:hover {
-  background: #e2e8f0;
+  background: rgba(255, 248, 223, 0.76);
 }
 
 .modal-action-button {
-  background: #2563eb;
+  background: var(--color-primary);
   color: #ffffff;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 10px 22px rgba(231, 57, 13, 0.2);
 }
 
 .modal-action-button:hover {
-  background: #1d4ed8;
+  background: #c92f0a;
 }
 
 .modal-action-button:disabled {
@@ -107,23 +108,24 @@
 }
 
 .secondary-action {
-  background: #e2e8f0;
-  color: #0f172a;
+  border: 1px solid var(--color-border);
+  background: rgba(255, 248, 223, 0.72);
+  color: var(--color-secondary);
   box-shadow: none;
 }
 
 .secondary-action:hover {
-  background: #cbd5e1;
+  background: rgba(242, 237, 213, 0.92);
 }
 
 .ghost-action {
-  background: #f8fafc;
-  color: #334155;
+  background: transparent;
+  color: var(--color-muted);
   box-shadow: none;
 }
 
 .ghost-action:hover {
-  background: #e2e8f0;
+  background: rgba(4, 74, 36, 0.08);
 }
 
 @media (max-width: 640px) {
