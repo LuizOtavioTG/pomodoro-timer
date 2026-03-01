@@ -14,6 +14,11 @@
   --shadow-soft: 0 18px 42px rgba(4, 38, 30, 0.12);
   --shadow-inset-soft: inset 0 1px 0 rgba(255, 255, 255, 0.72);
   --font-family-base: 'Nunito', sans-serif;
+  --font-size-title: 1.5rem;
+  --font-size-section: 1.25rem;
+  --font-size-label: 1rem;
+  --font-size-body: 0.875rem;
+  --font-size-caption: 0.75rem;
 }
 
 html,
@@ -23,6 +28,15 @@ body {
 
 body {
   font-family: var(--font-family-base);
+  font-size: var(--font-size-label);
+  line-height: 1.5;
   color: var(--color-deep-teal);
   background: var(--color-base);
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-family-base);
 }

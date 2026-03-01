@@ -18,8 +18,9 @@
   border: none;
   background: transparent;
   color: var(--color-secondary);
-  font-size: 0.875rem;
+  font-size: var(--font-size-body);
   font-weight: 700;
+  line-height: 1.2;
   padding: 12px 10px;
   border-radius: 12px;
   cursor: pointer;

@@ -1,4 +1,5 @@
 :host {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -10,9 +11,38 @@
   padding: 48px 24px 24px;
   box-sizing: border-box;
   color: var(--color-deep-teal);
+  overflow: hidden;
+}
+
+:host::before,
+:host::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: 2px dashed rgba(4, 74, 36, 0.14);
+  border-radius: 999px;
+  z-index: 0;
+}
+
+:host::before {
+  top: -88px;
+  right: -104px;
+  width: 260px;
+  height: 180px;
+  transform: rotate(18deg);
+}
+
+:host::after {
+  bottom: -92px;
+  left: -112px;
+  width: 280px;
+  height: 190px;
+  transform: rotate(-12deg);
 }
 
 .pomodoro-layout {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 460px;
   display: flex;
@@ -27,6 +57,7 @@
 }
 
 .pomodoro-container {
+  position: relative;
   width: 100%;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -38,6 +69,19 @@
   align-items: center;
   gap: 24px;
   backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.pomodoro-container::before {
+  content: '';
+  position: absolute;
+  inset: 18px 18px auto auto;
+  width: 74px;
+  height: 40px;
+  border-top: 2px dashed rgba(242, 103, 22, 0.22);
+  border-right: 2px dashed rgba(242, 103, 22, 0.22);
+  border-radius: 0 20px 0 0;
+  pointer-events: none;
 }
 
 .daily-pomodoro-count {
@@ -46,7 +90,7 @@
   border-radius: 999px;
   background: rgba(242, 103, 22, 0.12);
   color: var(--color-secondary);
-  font-size: 0.875rem;
+  font-size: var(--font-size-body);
   font-weight: 700;
   line-height: 1.4;
   padding: 8px 14px;
@@ -58,8 +102,9 @@
   border: none;
   border-radius: 16px;
   padding: 12px 18px;
-  font-size: 0.875rem;
+  font-size: var(--font-size-body);
   font-weight: 700;
+  line-height: 1.2;
   cursor: pointer;
   transition: transform 0.15s ease, background 0.2s ease,
     box-shadow 0.2s ease;

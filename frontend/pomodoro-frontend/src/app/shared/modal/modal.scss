@@ -34,8 +34,9 @@
 
 .modal-title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: var(--font-size-section);
   font-weight: 700;
+  line-height: 1.25;
   color: var(--color-deep-teal);
 }
 
@@ -47,8 +48,9 @@
   border-radius: 999px;
   background: rgba(4, 74, 36, 0.08);
   color: var(--color-secondary);
-  font-size: 0.95rem;
+  font-size: var(--font-size-body);
   font-weight: 700;
+  line-height: 1;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.15s ease;
 }

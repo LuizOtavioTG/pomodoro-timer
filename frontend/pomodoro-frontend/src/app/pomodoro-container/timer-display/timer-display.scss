@@ -4,6 +4,7 @@
 }
 
 .timer-display {
+  position: relative;
   width: 100%;
   padding: 24px 16px;
   border: 1px solid var(--color-border);
@@ -13,10 +14,39 @@
     var(--color-base-soft);
   box-shadow: var(--shadow-inset-soft), 0 12px 24px rgba(4, 38, 30, 0.08);
   text-align: center;
+  overflow: hidden;
+}
+
+.timer-display::before {
+  content: '';
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  width: 88px;
+  border-top: 2px dashed rgba(4, 74, 36, 0.16);
+  pointer-events: none;
+}
+
+.timer-display::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  width: 42px;
+  height: 42px;
+  border: 2px dashed rgba(242, 103, 22, 0.16);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.timer-label,
+.timer-value,
+.timer-subtext {
+  position: relative;
 }
 
 .timer-label {
-  font-size: 0.875rem;
+  font-size: var(--font-size-body);
   font-weight: 700;
   color: var(--color-secondary);
   margin-bottom: 8px;
@@ -28,13 +58,13 @@
   font-size: 4rem;
   font-weight: 700;
   color: var(--color-deep-teal);
-  line-height: 1;
+  line-height: 0.95;
   letter-spacing: 0;
 }
 
 .timer-subtext {
   margin-top: 12px;
-  font-size: 0.875rem;
+  font-size: var(--font-size-body);
   font-weight: 400;
   color: var(--color-muted);
 }
