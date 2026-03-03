@@ -35,12 +35,12 @@
   padding: 12px 14px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: rgba(242, 237, 213, 0.58);
+  background: var(--color-subtle-surface);
 }
 
 .settings-input-wrapper:focus-within {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(242, 103, 22, 0.14);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .settings-input {
@@ -90,7 +90,7 @@
   padding: 12px 14px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: rgba(242, 237, 213, 0.58);
+  background: var(--color-subtle-surface);
 }
 
 .settings-toggle > span {
@@ -125,7 +125,7 @@
 
 .permission-granted {
   color: var(--color-secondary);
-  background: rgba(8, 74, 36, 0.14);
+  background: var(--color-green-tint-strong);
 }
 
 .permission-default {
@@ -140,7 +140,7 @@
 
 .permission-unsupported {
   color: var(--color-muted);
-  background: rgba(4, 74, 36, 0.08);
+  background: var(--color-green-tint);
 }
 
 .settings-checkbox {

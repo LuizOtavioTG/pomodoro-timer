@@ -77,6 +77,29 @@ describe('PomodoroContainer', () => {
       .toContain('4 pomodoros concluidos hoje');
   });
 
+  it('should toggle dark mode and persist the theme preference', () => {
+    component.toggleTheme();
+    fixture.detectChanges();
+
+    expect(component.isDarkMode).toBeTrue();
+    expect(localStorage.getItem('pomodoro-theme')).toBe('dark');
+    expect((fixture.nativeElement as HTMLElement).classList)
+      .toContain('theme-dark');
+  });
+
+  it('should load a saved dark mode preference', () => {
+    fixture.destroy();
+    localStorage.setItem('pomodoro-theme', 'dark');
+
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.isDarkMode).toBeTrue();
+    expect((fixture.nativeElement as HTMLElement).classList)
+      .toContain('theme-dark');
+  });
+
   it('should display singular completed pomodoro progress', () => {
     component.pomodoroTimer.completedPomodorosToday = 1;
     fixture.detectChanges();

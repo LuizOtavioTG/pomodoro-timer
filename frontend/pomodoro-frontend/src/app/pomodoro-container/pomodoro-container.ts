@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, HostBinding, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TimerDisplay } from "./timer-display/timer-display";
 import { SessionSelector } from "./session-selector/session-selector";
@@ -19,6 +19,9 @@ import {
 import { PomodoroSoundNotificationService } from '../services/pomodoro-sound-notification';
 import { ModalComponent } from '../shared/modal/modal';
 import { SettingsFormComponent } from './settings-form/settings-form';
+
+const THEME_STORAGE_KEY = 'pomodoro-theme';
+type PomodoroTheme = 'light' | 'dark';
 
 @Component({
   selector: 'app-pomodoro-container',
@@ -41,9 +44,15 @@ export class PomodoroContainer {
     inject(PomodoroBrowserNotificationService);
 
   isSettingsModalOpen = false;
+  isDarkMode = this.loadThemePreference() === 'dark';
   settingsForm: PomodoroSettings = this.createSettingsSnapshot();
   browserNotificationPermissionStatus: BrowserNotificationPermissionStatus =
     this.browserNotification.getPermissionStatus();
+
+  @HostBinding('class.theme-dark')
+  get darkModeClass(): boolean {
+    return this.isDarkMode;
+  }
 
   constructor(public pomodoroTimer: PomodoroTimerService) {
     this.pomodoroTimer.sessionCompleted$
@@ -92,6 +101,11 @@ export class PomodoroContainer {
     }
 
     this.pomodoroTimer.reset();
+  }
+
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+    this.saveThemePreference(this.isDarkMode ? 'dark' : 'light');
   }
 
   openSettingsModal(): void {
@@ -223,5 +237,19 @@ export class PomodoroContainer {
 
   private isValidDuration(value: number): boolean {
     return Number.isInteger(value) && value >= 1 && value <= 120;
+  }
+
+  private loadThemePreference(): PomodoroTheme {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+
+    if (savedTheme === 'dark') {
+      return 'dark';
+    }
+
+    return 'light';
+  }
+
+  private saveThemePreference(theme: PomodoroTheme): void {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
   }
 }

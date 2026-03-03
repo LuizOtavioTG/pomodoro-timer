@@ -2,6 +2,16 @@
   <div class="page-toolbar">
     <button
       type="button"
+      class="theme-button"
+      [attr.aria-label]="isDarkMode ? 'Ativar tema claro' : 'Ativar tema escuro'"
+      [attr.aria-pressed]="isDarkMode"
+      (click)="toggleTheme()"
+    >
+      {{ isDarkMode ? 'Claro' : 'Escuro' }}
+    </button>
+
+    <button
+      type="button"
       class="settings-button"
       aria-label="Abrir configuracoes"
       [disabled]="pomodoroTimer.isRunning"

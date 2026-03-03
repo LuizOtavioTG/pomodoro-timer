@@ -11,6 +11,17 @@
   --color-deep-teal: #04261e;
   --color-muted: rgba(4, 38, 30, 0.68);
   --color-border: rgba(4, 38, 30, 0.14);
+  --color-subtle-surface: rgba(255, 248, 223, 0.72);
+  --color-subtle-hover: rgba(242, 237, 213, 0.92);
+  --color-green-tint: rgba(4, 74, 36, 0.08);
+  --color-green-tint-strong: rgba(4, 74, 36, 0.14);
+  --color-focus-ring: rgba(242, 103, 22, 0.14);
+  --color-timer-surface: linear-gradient(
+      135deg,
+      rgba(255, 248, 223, 0.95),
+      rgba(242, 237, 213, 0.64)
+    ),
+    var(--color-base-soft);
   --shadow-soft: 0 18px 42px rgba(4, 38, 30, 0.12);
   --shadow-inset-soft: inset 0 1px 0 rgba(255, 255, 255, 0.72);
   --font-family-base: 'Nunito', sans-serif;
