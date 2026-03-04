@@ -179,8 +179,7 @@ export class PomodoroContainer implements DoCheck {
   }
 
   private updateDocumentTitle(): void {
-    const nextDocumentTitle =
-      `${this.pomodoroTimer.formattedTime} - ${this.getDocumentTitleSessionLabel()}`;
+    const nextDocumentTitle = this.getDocumentTitle();
 
     if (nextDocumentTitle === this.currentDocumentTitle) {
       return;
@@ -188,6 +187,10 @@ export class PomodoroContainer implements DoCheck {
 
     this.document.title = nextDocumentTitle;
     this.currentDocumentTitle = nextDocumentTitle;
+  }
+
+  private getDocumentTitle(): string {
+    return `${this.pomodoroTimer.formattedTime} - ${this.getDocumentTitleSessionLabel()}`;
   }
 
   private getDocumentTitleSessionLabel(): string {
