@@ -17,9 +17,11 @@ describe('PomodoroContainer', () => {
   let soundNotificationService: jasmine.SpyObj<PomodoroSoundNotificationService>;
   let browserNotificationService:
     jasmine.SpyObj<PomodoroBrowserNotificationService>;
+  let originalDocumentTitle: string;
 
   beforeEach(async () => {
     localStorage.clear();
+    originalDocumentTitle = document.title;
     soundNotificationService =
       jasmine.createSpyObj<PomodoroSoundNotificationService>(
         'PomodoroSoundNotificationService',
@@ -55,9 +57,32 @@ describe('PomodoroContainer', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    document.title = originalDocumentTitle;
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should show the focus timer in the browser tab title', () => {
+    expect(document.title).toBe('25:00 - Focus');
+  });
+
+  it('should show the break timer in the browser tab title', () => {
+    component.onSessionSelected('break');
+    fixture.detectChanges();
+
+    expect(document.title).toBe('10:00 - Break');
+  });
+
+  it('should update the browser tab title when the timer ticks', fakeAsync(() => {
+    component.pomodoroTimer.start();
+    tick(1000);
+    fixture.detectChanges();
+
+    expect(document.title).toBe('24:59 - Focus');
+  }));
 
   it('should open the settings modal', () => {
     component.openSettingsModal();

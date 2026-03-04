@@ -1,4 +1,11 @@
-import { Component, DestroyRef, HostBinding, inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  Component,
+  DestroyRef,
+  DoCheck,
+  HostBinding,
+  inject,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TimerDisplay } from "./timer-display/timer-display";
 import { SessionSelector } from "./session-selector/session-selector";
@@ -36,12 +43,14 @@ type PomodoroTheme = 'light' | 'dark';
   templateUrl: './pomodoro-container.html',
   styleUrl: './pomodoro-container.scss',
 })
-export class PomodoroContainer {
+export class PomodoroContainer implements DoCheck {
   private readonly pomodoroConfig = inject(PomodoroConfigService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly document = inject(DOCUMENT);
   private readonly soundNotification = inject(PomodoroSoundNotificationService);
   private readonly browserNotification =
     inject(PomodoroBrowserNotificationService);
+  private currentDocumentTitle = '';
 
   isSettingsModalOpen = false;
   isDarkMode = this.loadThemePreference() === 'dark';
@@ -61,6 +70,10 @@ export class PomodoroContainer {
         this.playSessionEndSound();
         this.showSessionEndBrowserNotification(sessionCompletion);
       });
+  }
+
+  ngDoCheck(): void {
+    this.updateDocumentTitle();
   }
 
   get dailyPomodoroProgressMessage(): string {
@@ -163,6 +176,26 @@ export class PomodoroContainer {
 
   private createSettingsSnapshot(): PomodoroSettings {
     return { ...this.pomodoroConfig.getSettings() };
+  }
+
+  private updateDocumentTitle(): void {
+    const nextDocumentTitle =
+      `${this.pomodoroTimer.formattedTime} - ${this.getDocumentTitleSessionLabel()}`;
+
+    if (nextDocumentTitle === this.currentDocumentTitle) {
+      return;
+    }
+
+    this.document.title = nextDocumentTitle;
+    this.currentDocumentTitle = nextDocumentTitle;
+  }
+
+  private getDocumentTitleSessionLabel(): string {
+    if (this.pomodoroTimer.selectedSession === 'break') {
+      return 'Break';
+    }
+
+    return 'Focus';
   }
 
   private playSessionEndSound(): void {
