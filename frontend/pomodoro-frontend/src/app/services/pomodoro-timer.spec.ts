@@ -4,6 +4,7 @@ import { PomodoroTimerService } from './pomodoro-timer';
 
 describe('PomodoroTimerService', () => {
   const dailyPomodoroCountStorageKey = 'daily-pomodoro-count';
+  const pomodoroHistoryStorageKey = 'pomodoro-history';
   let service: PomodoroTimerService;
 
   beforeEach(() => {
@@ -173,6 +174,55 @@ describe('PomodoroTimerService', () => {
     );
   }));
 
+  it('should add completed focus sessions to history', fakeAsync(() => {
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(localStorage.getItem(pomodoroHistoryStorageKey)).toBe(
+      JSON.stringify([
+        {
+          date: getTodayDateString(),
+          completedSessions: 1,
+        },
+      ])
+    );
+  }));
+
+  it('should increment existing history for today', fakeAsync(() => {
+    localStorage.setItem(
+      pomodoroHistoryStorageKey,
+      JSON.stringify([
+        {
+          date: getPreviousDayDateString(),
+          completedSessions: 2,
+        },
+        {
+          date: getTodayDateString(),
+          completedSessions: 1,
+        },
+      ])
+    );
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(localStorage.getItem(pomodoroHistoryStorageKey)).toBe(
+      JSON.stringify([
+        {
+          date: getPreviousDayDateString(),
+          completedSessions: 2,
+        },
+        {
+          date: getTodayDateString(),
+          completedSessions: 2,
+        },
+      ])
+    );
+  }));
+
   it('should keep completed pomodoros after reloading the service', fakeAsync(() => {
     service.remainingSeconds = 1;
 
@@ -191,6 +241,26 @@ describe('PomodoroTimerService', () => {
     tick(1000);
 
     expect(service.completedPomodorosToday).toBe(0);
+  }));
+
+  it('should not add completed break sessions to history', fakeAsync(() => {
+    service.selectSession('break');
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(localStorage.getItem(pomodoroHistoryStorageKey)).toBeNull();
+  }));
+
+  it('should not add interrupted focus sessions to history', fakeAsync(() => {
+    service.remainingSeconds = 1;
+
+    service.start();
+    service.reset();
+    tick(1000);
+
+    expect(localStorage.getItem(pomodoroHistoryStorageKey)).toBeNull();
   }));
 
   it('should move from a completed break session to a short focus session', fakeAsync(() => {
