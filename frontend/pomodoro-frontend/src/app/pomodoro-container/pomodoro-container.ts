@@ -2,11 +2,12 @@ import { DOCUMENT } from '@angular/common';
 import {
   Component,
   DestroyRef,
-  DoCheck,
   HostBinding,
+  OnDestroy,
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { interval, Subscription } from 'rxjs';
 import { TimerDisplay } from "./timer-display/timer-display";
 import { SessionSelector } from "./session-selector/session-selector";
 import { TimerControls } from "./timer-controls/timer-controls";
@@ -43,14 +44,16 @@ type PomodoroTheme = 'light' | 'dark';
   templateUrl: './pomodoro-container.html',
   styleUrl: './pomodoro-container.scss',
 })
-export class PomodoroContainer implements DoCheck {
+export class PomodoroContainer implements OnDestroy {
   private readonly pomodoroConfig = inject(PomodoroConfigService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
   private readonly soundNotification = inject(PomodoroSoundNotificationService);
   private readonly browserNotification =
     inject(PomodoroBrowserNotificationService);
+  private readonly originalDocumentTitle = this.document.title;
   private currentDocumentTitle = '';
+  private documentTitleTimerSubscription?: Subscription;
 
   isSettingsModalOpen = false;
   isDarkMode = this.loadThemePreference() === 'dark';
@@ -70,10 +73,13 @@ export class PomodoroContainer implements DoCheck {
         this.playSessionEndSound();
         this.showSessionEndBrowserNotification(sessionCompletion);
       });
+
+    this.updateDocumentTitle();
   }
 
-  ngDoCheck(): void {
-    this.updateDocumentTitle();
+  ngOnDestroy(): void {
+    this.stopDocumentTitleTimer();
+    this.document.title = this.originalDocumentTitle;
   }
 
   get dailyPomodoroProgressMessage(): string {
@@ -96,16 +102,24 @@ export class PomodoroContainer implements DoCheck {
     }
 
     this.pomodoroTimer.selectSession(sessionType);
+    this.updateDocumentTitle();
   }
 
   onTimerToggleClicked(): void {
     if (this.pomodoroTimer.isRunning) {
       this.pomodoroTimer.pause();
+      this.stopDocumentTitleTimer();
+      this.updateDocumentTitle();
       return;
     }
 
     this.soundNotification.prepare();
     this.pomodoroTimer.start();
+    this.updateDocumentTitle();
+
+    if (this.pomodoroTimer.isRunning) {
+      this.startDocumentTitleTimer();
+    }
   }
 
   onResetClicked(): void {
@@ -114,6 +128,7 @@ export class PomodoroContainer implements DoCheck {
     }
 
     this.pomodoroTimer.reset();
+    this.updateDocumentTitle();
   }
 
   toggleTheme(): void {
@@ -141,6 +156,7 @@ export class PomodoroContainer implements DoCheck {
     this.pomodoroConfig.resetSettings();
     this.settingsForm = this.createSettingsSnapshot();
     this.pomodoroTimer.reset();
+    this.updateDocumentTitle();
   }
 
   saveSettings(): void {
@@ -150,6 +166,7 @@ export class PomodoroContainer implements DoCheck {
 
     this.pomodoroConfig.updateSettings({ ...this.settingsForm });
     this.pomodoroTimer.reset();
+    this.updateDocumentTitle();
     this.closeSettingsModal();
   }
 
@@ -187,6 +204,22 @@ export class PomodoroContainer implements DoCheck {
 
     this.document.title = nextDocumentTitle;
     this.currentDocumentTitle = nextDocumentTitle;
+  }
+
+  private startDocumentTitleTimer(): void {
+    this.stopDocumentTitleTimer();
+    this.documentTitleTimerSubscription = interval(1000).subscribe(() => {
+      this.updateDocumentTitle();
+
+      if (!this.pomodoroTimer.isRunning) {
+        this.stopDocumentTitleTimer();
+      }
+    });
+  }
+
+  private stopDocumentTitleTimer(): void {
+    this.documentTitleTimerSubscription?.unsubscribe();
+    this.documentTitleTimerSubscription = undefined;
   }
 
   private getDocumentTitle(): string {

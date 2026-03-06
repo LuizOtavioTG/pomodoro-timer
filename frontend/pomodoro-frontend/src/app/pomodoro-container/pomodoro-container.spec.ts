@@ -77,12 +77,36 @@ describe('PomodoroContainer', () => {
   });
 
   it('should update the browser tab title when the timer ticks', fakeAsync(() => {
-    component.pomodoroTimer.start();
+    component.onTimerToggleClicked();
     tick(1000);
-    fixture.detectChanges();
 
     expect(document.title).toBe('24:59 - Focus');
+
+    component.onTimerToggleClicked();
   }));
+
+  it('should update the browser tab title when a focus session ends', fakeAsync(() => {
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.onTimerToggleClicked();
+    tick(1000);
+
+    expect(document.title).toBe('10:00 - Break');
+  }));
+
+  it('should restore the original browser tab title when destroyed', () => {
+    fixture.destroy();
+    document.title = 'Pomodoro Timer';
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(document.title).toBe('25:00 - Focus');
+
+    fixture.destroy();
+
+    expect(document.title).toBe('Pomodoro Timer');
+  });
 
   it('should open the settings modal', () => {
     component.openSettingsModal();
