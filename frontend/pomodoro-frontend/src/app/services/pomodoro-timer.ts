@@ -4,10 +4,7 @@ import {
   PomodoroConfigService,
   PomodoroSessionType,
 } from './pomodoro-config';
-import {
-  POMODORO_HISTORY_STORAGE_KEY,
-  PomodoroHistory,
-} from './pomodoro-history';
+import { PomodoroHistoryService } from './pomodoro-history';
 
 const DAILY_POMODORO_COUNT_STORAGE_KEY = 'daily-pomodoro-count';
 const SHORT_CYCLES_BEFORE_LONG_FOCUS = 4;
@@ -27,6 +24,7 @@ export interface PomodoroSessionCompletion {
 })
 export class PomodoroTimerService {
   private readonly pomodoroConfig = inject(PomodoroConfigService);
+  private readonly pomodoroHistory = inject(PomodoroHistoryService);
   private readonly sessionCompletedSubject =
     new Subject<PomodoroSessionCompletion>();
 
@@ -85,7 +83,7 @@ export class PomodoroTimerService {
     if (this.isFocusSession(completedSession)) {
       this.completedPomodorosToday++;
       this.saveCompletedPomodorosToday();
-      this.saveCompletedSessionToHistory();
+      this.pomodoroHistory.addCompletedSession();
     }
 
     this.pause();
@@ -141,56 +139,6 @@ export class PomodoroTimerService {
         count,
       })
     );
-  }
-
-  private saveCompletedSessionToHistory(): void {
-    const today = this.getTodayDateString();
-    const history = this.loadPomodoroHistory();
-    const todayHistoryEntry = history.find((entry) => entry.date === today);
-
-    if (todayHistoryEntry) {
-      todayHistoryEntry.completedSessions++;
-    } else {
-      history.push({
-        date: today,
-        completedSessions: 1,
-      });
-    }
-
-    localStorage.setItem(
-      POMODORO_HISTORY_STORAGE_KEY,
-      JSON.stringify(history)
-    );
-  }
-
-  private loadPomodoroHistory(): PomodoroHistory {
-    const savedHistory = localStorage.getItem(POMODORO_HISTORY_STORAGE_KEY);
-
-    if (!savedHistory) {
-      return [];
-    }
-
-    try {
-      const parsedHistory = JSON.parse(savedHistory) as PomodoroHistory;
-
-      if (Array.isArray(parsedHistory)) {
-        return parsedHistory.filter((entry) =>
-          this.isPomodoroHistoryEntryValid(entry)
-        );
-      }
-    } catch {
-      return [];
-    }
-
-    return [];
-  }
-
-  private isPomodoroHistoryEntryValid(
-    entry: PomodoroHistory[number]
-  ): boolean {
-    return typeof entry.date === 'string'
-      && Number.isInteger(entry.completedSessions)
-      && entry.completedSessions >= 0;
   }
 
   private loadCompletedPomodorosToday(): number {
