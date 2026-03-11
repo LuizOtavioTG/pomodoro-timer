@@ -8,6 +8,7 @@ import {
 import { PomodoroContainer } from './pomodoro-container';
 import { PomodoroBrowserNotificationService } from '../services/pomodoro-browser-notification';
 import { PomodoroConfigService } from '../services/pomodoro-config';
+import { POMODORO_HISTORY_STORAGE_KEY } from '../services/pomodoro-history';
 import { PomodoroSoundNotificationService } from '../services/pomodoro-sound-notification';
 
 describe('PomodoroContainer', () => {
@@ -168,6 +169,93 @@ describe('PomodoroContainer', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
       .toContain('1 pomodoro concluido hoje');
+  }));
+
+  it('should display the weekly history summary', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.querySelector('.history-summary')?.textContent)
+      .toContain('Historico');
+    expect(compiled.querySelector('.history-summary')?.textContent)
+      .toContain('Ultimos 7 dias');
+    expect(compiled.querySelectorAll('.history-list-item').length).toBe(7);
+    expect(compiled.querySelectorAll('.history-chart-item').length).toBe(7);
+  });
+
+  it('should load completed pomodoros from history', () => {
+    fixture.destroy();
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringDaysAgo(1),
+          completedSessions: 2,
+        },
+        {
+          date: getTodayDateString(),
+          completedSessions: 3,
+        },
+      ])
+    );
+
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const historyTotals = compiled.querySelectorAll('.history-total strong');
+
+    expect(historyTotals[0].textContent?.trim()).toBe('3');
+    expect(historyTotals[1].textContent?.trim()).toBe('5');
+    expect(compiled.querySelector('.history-summary')?.textContent)
+      .toContain(formatHistoryDate(getTodayDateString()));
+  });
+
+  it('should scale history chart bars by the weekly maximum', () => {
+    fixture.destroy();
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringDaysAgo(1),
+          completedSessions: 2,
+        },
+        {
+          date: getTodayDateString(),
+          completedSessions: 4,
+        },
+      ])
+    );
+
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const chartItems = compiled.querySelectorAll('.history-chart-item');
+    const yesterdayBar = chartItems[5].querySelector(
+      '.history-bar'
+    ) as HTMLElement;
+    const todayBar = chartItems[6].querySelector('.history-bar') as HTMLElement;
+
+    expect(yesterdayBar.style.height).toBe('50%');
+    expect(todayBar.style.height).toBe('100%');
+    expect(chartItems[6].getAttribute('aria-label'))
+      .toContain('4 pomodoros concluidos');
+  });
+
+  it('should update the history summary when a focus session ends', fakeAsync(() => {
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const historyTotals = compiled.querySelectorAll('.history-total strong');
+
+    expect(historyTotals[0].textContent?.trim()).toBe('1');
+    expect(historyTotals[1].textContent?.trim()).toBe('1');
   }));
 
   it('should prepare sound before starting the timer from the unified control', () => {
@@ -410,4 +498,24 @@ describe('PomodoroContainer', () => {
     expect(component.isSettingsModalOpen).toBeFalse();
     expect(component.pomodoroTimer.formattedTime).toBe('35:00');
   });
+
+  function getTodayDateString(): string {
+    return getDateStringDaysAgo(0);
+  }
+
+  function getDateStringDaysAgo(daysAgo: number): string {
+    const date = new Date();
+    date.setDate(date.getDate() - daysAgo);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
+  function formatHistoryDate(date: string): string {
+    const [, month, day] = date.split('-');
+
+    return `${day}/${month}`;
+  }
 });

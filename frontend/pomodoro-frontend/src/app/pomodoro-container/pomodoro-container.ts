@@ -24,6 +24,10 @@ import {
   PomodoroSessionCompletion,
   PomodoroTimerService,
 } from '../services/pomodoro-timer';
+import {
+  PomodoroDailyHistoryEntry,
+  PomodoroHistoryService,
+} from '../services/pomodoro-history';
 import { PomodoroSoundNotificationService } from '../services/pomodoro-sound-notification';
 import { ModalComponent } from '../shared/modal/modal';
 import { SettingsFormComponent } from './settings-form/settings-form';
@@ -49,6 +53,7 @@ export class PomodoroContainer implements OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
   private readonly soundNotification = inject(PomodoroSoundNotificationService);
+  private readonly pomodoroHistory = inject(PomodoroHistoryService);
   private readonly browserNotification =
     inject(PomodoroBrowserNotificationService);
   private readonly originalDocumentTitle = this.document.title;
@@ -57,6 +62,8 @@ export class PomodoroContainer implements OnDestroy {
 
   isSettingsModalOpen = false;
   isDarkMode = this.loadThemePreference() === 'dark';
+  weeklyHistory: PomodoroDailyHistoryEntry[] =
+    this.pomodoroHistory.getWeeklyHistory();
   settingsForm: PomodoroSettings = this.createSettingsSnapshot();
   browserNotificationPermissionStatus: BrowserNotificationPermissionStatus =
     this.browserNotification.getPermissionStatus();
@@ -70,6 +77,7 @@ export class PomodoroContainer implements OnDestroy {
     this.pomodoroTimer.sessionCompleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((sessionCompletion) => {
+        this.refreshHistory();
         this.playSessionEndSound();
         this.showSessionEndBrowserNotification(sessionCompletion);
       });
@@ -94,6 +102,44 @@ export class PomodoroContainer implements OnDestroy {
     }
 
     return `${completedPomodoros} pomodoros concluidos hoje`;
+  }
+
+  get completedPomodorosThisWeek(): number {
+    return this.weeklyHistory.reduce(
+      (total, historyEntry) => total + historyEntry.completedSessions,
+      0
+    );
+  }
+
+  get completedPomodorosFromHistoryToday(): number {
+    const today = this.getTodayDateString();
+
+    return this.weeklyHistory.find((entry) => entry.date === today)
+      ?.completedSessions ?? 0;
+  }
+
+  get maxCompletedPomodorosInWeek(): number {
+    return Math.max(
+      ...this.weeklyHistory.map((entry) => entry.completedSessions),
+      0
+    );
+  }
+
+  formatHistoryDate(date: string): string {
+    const [, month, day] = date.split('-');
+
+    return `${day}/${month}`;
+  }
+
+  getHistoryBarHeight(completedSessions: number): number {
+    if (completedSessions === 0 || this.maxCompletedPomodorosInWeek === 0) {
+      return 0;
+    }
+
+    return Math.max(
+      18,
+      Math.round((completedSessions / this.maxCompletedPomodorosInWeek) * 100)
+    );
   }
 
   onSessionSelected(sessionType: PomodoroSessionType): void {
@@ -193,6 +239,10 @@ export class PomodoroContainer implements OnDestroy {
 
   private createSettingsSnapshot(): PomodoroSettings {
     return { ...this.pomodoroConfig.getSettings() };
+  }
+
+  private refreshHistory(): void {
+    this.weeklyHistory = this.pomodoroHistory.getWeeklyHistory();
   }
 
   private updateDocumentTitle(): void {
@@ -320,5 +370,14 @@ export class PomodoroContainer implements OnDestroy {
 
   private saveThemePreference(theme: PomodoroTheme): void {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }
+
+  private getTodayDateString(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
   }
 }
