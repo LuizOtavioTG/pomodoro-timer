@@ -254,6 +254,16 @@ describe('PomodoroContainer', () => {
       .toContain('4 pomodoros concluidos');
   });
 
+  it('should render empty chart bars for days without sessions', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const bars = Array.from(
+      compiled.querySelectorAll('.history-bar')
+    ) as HTMLElement[];
+
+    expect(bars.length).toBe(7);
+    expect(bars.every((bar) => bar.style.height === '0%')).toBeTrue();
+  });
+
   it('should update the history summary when a focus session ends', fakeAsync(() => {
     component.pomodoroTimer.remainingSeconds = 1;
 

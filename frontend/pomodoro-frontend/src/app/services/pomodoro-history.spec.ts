@@ -50,6 +50,19 @@ describe('PomodoroHistoryService', () => {
     ]);
   });
 
+  it('should keep completed sessions after reloading the service', () => {
+    service.addCompletedSession();
+
+    service = reloadService();
+
+    expect(service.getDailyHistory()).toEqual([
+      {
+        date: getTodayDateString(),
+        completedSessions: 1,
+      },
+    ]);
+  });
+
   it('should return valid daily history sorted by date', () => {
     localStorage.setItem(
       POMODORO_HISTORY_STORAGE_KEY,
@@ -111,6 +124,41 @@ describe('PomodoroHistoryService', () => {
     });
   });
 
+  it('should ignore history older than the weekly window', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringDaysAgo(7),
+          completedSessions: 5,
+        },
+        {
+          date: getDateStringDaysAgo(6),
+          completedSessions: 1,
+        },
+      ])
+    );
+
+    const weeklyHistory = service.getWeeklyHistory();
+
+    expect(weeklyHistory[0]).toEqual({
+      date: getDateStringDaysAgo(6),
+      completedSessions: 1,
+    });
+    expect(weeklyHistory.reduce(
+      (total, entry) => total + entry.completedSessions,
+      0
+    )).toBe(1);
+  });
+
+  it('should return zeroes for all weekly dates when no sessions were completed', () => {
+    const weeklyHistory = service.getWeeklyHistory();
+
+    expect(weeklyHistory.length).toBe(7);
+    expect(weeklyHistory.every((entry) => entry.completedSessions === 0))
+      .toBeTrue();
+  });
+
   it('should clear saved history', () => {
     service.addCompletedSession();
 
@@ -136,5 +184,12 @@ describe('PomodoroHistoryService', () => {
     const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+  }
+
+  function reloadService(): PomodoroHistoryService {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({});
+
+    return TestBed.inject(PomodoroHistoryService);
   }
 });
