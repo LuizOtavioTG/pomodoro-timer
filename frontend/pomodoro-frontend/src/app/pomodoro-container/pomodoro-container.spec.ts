@@ -182,6 +182,16 @@ describe('PomodoroContainer', () => {
     expect(compiled.querySelectorAll('.history-chart-item').length).toBe(7);
   });
 
+  it('should keep history outside the main timer container', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const timerContainer = compiled.querySelector('.pomodoro-container');
+    const historySummary = compiled.querySelector('.history-summary');
+
+    expect(timerContainer?.contains(historySummary)).toBeFalse();
+    expect(historySummary?.parentElement?.classList)
+      .toContain('pomodoro-layout');
+  });
+
   it('should load completed pomodoros from history', () => {
     fixture.destroy();
     localStorage.setItem(

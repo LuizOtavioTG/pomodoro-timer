@@ -133,9 +133,14 @@
 }
 
 .history-summary {
+  box-sizing: border-box;
   width: 100%;
-  border-top: 1px solid var(--color-border);
-  padding-top: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 12px 28px rgba(4, 38, 30, 0.1), var(--shadow-inset-soft);
+  backdrop-filter: blur(10px);
 }
 
 .history-heading {

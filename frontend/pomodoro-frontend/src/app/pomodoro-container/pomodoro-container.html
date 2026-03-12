@@ -39,66 +39,66 @@
       (toggleClicked)="onTimerToggleClicked()"
       (resetClicked)="onResetClicked()"
     ></app-timer-controls>
-
-    <section class="history-summary" aria-labelledby="history-summary-title">
-      <div class="history-heading">
-        <h2 id="history-summary-title">Historico</h2>
-        <p>Ultimos 7 dias</p>
-      </div>
-
-      <div class="history-totals">
-        <div class="history-total">
-          <span class="history-total-label">Hoje</span>
-          <strong>{{ completedPomodorosFromHistoryToday }}</strong>
-        </div>
-
-        <div class="history-total">
-          <span class="history-total-label">Semana</span>
-          <strong>{{ completedPomodorosThisWeek }}</strong>
-        </div>
-      </div>
-
-      <ul class="history-list" aria-label="Pomodoros concluidos por data">
-        @for (historyEntry of weeklyHistory; track historyEntry.date) {
-          <li class="history-list-item">
-            <span>{{ formatHistoryDate(historyEntry.date) }}</span>
-            <strong>{{ historyEntry.completedSessions }}</strong>
-          </li>
-        }
-      </ul>
-
-      <div
-        class="history-chart"
-        role="img"
-        aria-label="Grafico de pomodoros concluidos nos ultimos 7 dias"
-      >
-        @for (historyEntry of weeklyHistory; track historyEntry.date) {
-          <div
-            class="history-chart-item"
-            [attr.aria-label]="
-              formatHistoryDate(historyEntry.date)
-              + ': '
-              + historyEntry.completedSessions
-              + ' pomodoros concluidos'
-            "
-          >
-            <div class="history-bar-track">
-              <span
-                class="history-bar"
-                [style.height.%]="getHistoryBarHeight(historyEntry.completedSessions)"
-              ></span>
-            </div>
-            <span class="history-chart-value">
-              {{ historyEntry.completedSessions }}
-            </span>
-            <span class="history-chart-date">
-              {{ formatHistoryDate(historyEntry.date) }}
-            </span>
-          </div>
-        }
-      </div>
-    </section>
   </div>
+
+  <section class="history-summary" aria-labelledby="history-summary-title">
+    <div class="history-heading">
+      <h2 id="history-summary-title">Historico</h2>
+      <p>Ultimos 7 dias</p>
+    </div>
+
+    <div class="history-totals">
+      <div class="history-total">
+        <span class="history-total-label">Hoje</span>
+        <strong>{{ completedPomodorosFromHistoryToday }}</strong>
+      </div>
+
+      <div class="history-total">
+        <span class="history-total-label">Semana</span>
+        <strong>{{ completedPomodorosThisWeek }}</strong>
+      </div>
+    </div>
+
+    <ul class="history-list" aria-label="Pomodoros concluidos por data">
+      @for (historyEntry of weeklyHistory; track historyEntry.date) {
+        <li class="history-list-item">
+          <span>{{ formatHistoryDate(historyEntry.date) }}</span>
+          <strong>{{ historyEntry.completedSessions }}</strong>
+        </li>
+      }
+    </ul>
+
+    <div
+      class="history-chart"
+      role="img"
+      aria-label="Grafico de pomodoros concluidos nos ultimos 7 dias"
+    >
+      @for (historyEntry of weeklyHistory; track historyEntry.date) {
+        <div
+          class="history-chart-item"
+          [attr.aria-label]="
+            formatHistoryDate(historyEntry.date)
+            + ': '
+            + historyEntry.completedSessions
+            + ' pomodoros concluidos'
+          "
+        >
+          <div class="history-bar-track">
+            <span
+              class="history-bar"
+              [style.height.%]="getHistoryBarHeight(historyEntry.completedSessions)"
+            ></span>
+          </div>
+          <span class="history-chart-value">
+            {{ historyEntry.completedSessions }}
+          </span>
+          <span class="history-chart-date">
+            {{ formatHistoryDate(historyEntry.date) }}
+          </span>
+        </div>
+      }
+    </div>
+  </section>
 </div>
 
 <app-modal
