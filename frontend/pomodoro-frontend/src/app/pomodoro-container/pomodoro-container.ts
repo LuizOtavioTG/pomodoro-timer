@@ -34,6 +34,7 @@ import { SettingsFormComponent } from './settings-form/settings-form';
 
 const THEME_STORAGE_KEY = 'pomodoro-theme';
 type PomodoroTheme = 'light' | 'dark';
+type HistoryViewMode = 'daily' | 'weekly';
 
 @Component({
   selector: 'app-pomodoro-container',
@@ -62,6 +63,7 @@ export class PomodoroContainer implements OnDestroy {
 
   isSettingsModalOpen = false;
   isDarkMode = this.loadThemePreference() === 'dark';
+  selectedHistoryView: HistoryViewMode = 'weekly';
   weeklyHistory: PomodoroDailyHistoryEntry[] =
     this.pomodoroHistory.getWeeklyHistory();
   settingsForm: PomodoroSettings = this.createSettingsSnapshot();
@@ -118,9 +120,46 @@ export class PomodoroContainer implements OnDestroy {
       ?.completedSessions ?? 0;
   }
 
-  get maxCompletedPomodorosInWeek(): number {
+  get displayedHistory(): PomodoroDailyHistoryEntry[] {
+    if (this.selectedHistoryView === 'daily') {
+      return [
+        {
+          date: this.getTodayDateString(),
+          completedSessions: this.completedPomodorosFromHistoryToday,
+        },
+      ];
+    }
+
+    return this.weeklyHistory;
+  }
+
+  get historyPeriodLabel(): string {
+    if (this.selectedHistoryView === 'daily') {
+      return 'Hoje';
+    }
+
+    return 'Ultimos 7 dias';
+  }
+
+  get historyListAriaLabel(): string {
+    if (this.selectedHistoryView === 'daily') {
+      return 'Pomodoros concluidos hoje';
+    }
+
+    return 'Pomodoros concluidos por data';
+  }
+
+  get historyChartAriaLabel(): string {
+    if (this.selectedHistoryView === 'daily') {
+      return 'Grafico de pomodoros concluidos hoje';
+    }
+
+    return 'Grafico de pomodoros concluidos nos ultimos 7 dias';
+  }
+
+  get maxCompletedPomodorosInDisplayedHistory(): number {
     return Math.max(
-      ...this.weeklyHistory.map((entry) => entry.completedSessions),
+      ...this.displayedHistory.map((entry) => entry.completedSessions),
       0
     );
   }
@@ -132,14 +171,24 @@ export class PomodoroContainer implements OnDestroy {
   }
 
   getHistoryBarHeight(completedSessions: number): number {
-    if (completedSessions === 0 || this.maxCompletedPomodorosInWeek === 0) {
+    if (
+      completedSessions === 0
+      || this.maxCompletedPomodorosInDisplayedHistory === 0
+    ) {
       return 0;
     }
 
     return Math.max(
       18,
-      Math.round((completedSessions / this.maxCompletedPomodorosInWeek) * 100)
+      Math.round(
+        (completedSessions / this.maxCompletedPomodorosInDisplayedHistory)
+        * 100
+      )
     );
+  }
+
+  selectHistoryView(viewMode: HistoryViewMode): void {
+    this.selectedHistoryView = viewMode;
   }
 
   onSessionSelected(sessionType: PomodoroSessionType): void {

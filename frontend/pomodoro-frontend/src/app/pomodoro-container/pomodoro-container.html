@@ -44,7 +44,33 @@
   <section class="history-summary" aria-labelledby="history-summary-title">
     <div class="history-heading">
       <h2 id="history-summary-title">Historico</h2>
-      <p>Ultimos 7 dias</p>
+      <p>{{ historyPeriodLabel }}</p>
+    </div>
+
+    <div
+      class="history-view-toggle"
+      role="group"
+      aria-label="Alternar visualizacao do historico"
+    >
+      <button
+        type="button"
+        class="history-view-button"
+        [class.active]="selectedHistoryView === 'daily'"
+        [attr.aria-pressed]="selectedHistoryView === 'daily'"
+        (click)="selectHistoryView('daily')"
+      >
+        Diario
+      </button>
+
+      <button
+        type="button"
+        class="history-view-button"
+        [class.active]="selectedHistoryView === 'weekly'"
+        [attr.aria-pressed]="selectedHistoryView === 'weekly'"
+        (click)="selectHistoryView('weekly')"
+      >
+        Semanal
+      </button>
     </div>
 
     <div class="history-totals">
@@ -59,8 +85,8 @@
       </div>
     </div>
 
-    <ul class="history-list" aria-label="Pomodoros concluidos por data">
-      @for (historyEntry of weeklyHistory; track historyEntry.date) {
+    <ul class="history-list" [attr.aria-label]="historyListAriaLabel">
+      @for (historyEntry of displayedHistory; track historyEntry.date) {
         <li class="history-list-item">
           <span>{{ formatHistoryDate(historyEntry.date) }}</span>
           <strong>{{ historyEntry.completedSessions }}</strong>
@@ -71,9 +97,9 @@
     <div
       class="history-chart"
       role="img"
-      aria-label="Grafico de pomodoros concluidos nos ultimos 7 dias"
+      [attr.aria-label]="historyChartAriaLabel"
     >
-      @for (historyEntry of weeklyHistory; track historyEntry.date) {
+      @for (historyEntry of displayedHistory; track historyEntry.date) {
         <div
           class="history-chart-item"
           [attr.aria-label]="

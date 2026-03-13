@@ -148,7 +148,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .history-heading h2,
@@ -167,6 +167,40 @@
   font-size: 0.9rem;
   font-weight: 700;
   line-height: 1.2;
+}
+
+.history-view-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-subtle-surface);
+  padding: 4px;
+  margin-bottom: 14px;
+}
+
+.history-view-button {
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: 9px 10px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.history-view-button:hover {
+  background: var(--color-subtle-hover);
+  color: var(--color-deep-teal);
+}
+
+.history-view-button.active {
+  background: var(--color-primary);
+  color: #ffffff;
 }
 
 .history-totals {
@@ -200,7 +234,7 @@
 
 .history-list {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
   gap: 8px;
   list-style: none;
   margin: 0 0 14px;
@@ -237,7 +271,7 @@
 
 .history-chart {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
   align-items: end;
   gap: 8px;
   min-height: 158px;
@@ -388,10 +422,6 @@
     align-items: flex-start;
     flex-direction: column;
     gap: 4px;
-  }
-
-  .history-list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .history-chart {

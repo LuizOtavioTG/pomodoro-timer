@@ -182,6 +182,34 @@ describe('PomodoroContainer', () => {
     expect(compiled.querySelectorAll('.history-chart-item').length).toBe(7);
   });
 
+  it('should switch between daily and weekly history views', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const dailyButton = getHistoryViewButton('Diario');
+    const weeklyButton = getHistoryViewButton('Semanal');
+
+    dailyButton.click();
+    fixture.detectChanges();
+
+    expect(component.selectedHistoryView).toBe('daily');
+    expect(dailyButton.getAttribute('aria-pressed')).toBe('true');
+    expect(compiled.querySelector('.history-heading')?.textContent)
+      .toContain('Hoje');
+    expect(compiled.querySelectorAll('.history-list-item').length).toBe(1);
+    expect(compiled.querySelectorAll('.history-chart-item').length).toBe(1);
+    expect(compiled.querySelector('.history-chart')?.getAttribute('aria-label'))
+      .toBe('Grafico de pomodoros concluidos hoje');
+
+    weeklyButton.click();
+    fixture.detectChanges();
+
+    expect(component.selectedHistoryView).toBe('weekly');
+    expect(weeklyButton.getAttribute('aria-pressed')).toBe('true');
+    expect(compiled.querySelector('.history-heading')?.textContent)
+      .toContain('Ultimos 7 dias');
+    expect(compiled.querySelectorAll('.history-list-item').length).toBe(7);
+    expect(compiled.querySelectorAll('.history-chart-item').length).toBe(7);
+  });
+
   it('should keep history outside the main timer container', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const timerContainer = compiled.querySelector('.pomodoro-container');
@@ -537,5 +565,15 @@ describe('PomodoroContainer', () => {
     const [, month, day] = date.split('-');
 
     return `${day}/${month}`;
+  }
+
+  function getHistoryViewButton(label: string): HTMLButtonElement {
+    const buttons = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll(
+        '.history-view-button'
+      )
+    ) as HTMLButtonElement[];
+
+    return buttons.find((button) => button.textContent?.trim() === label)!;
   }
 });
