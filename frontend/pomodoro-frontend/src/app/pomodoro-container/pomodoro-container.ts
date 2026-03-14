@@ -62,6 +62,7 @@ export class PomodoroContainer implements OnDestroy {
   private documentTitleTimerSubscription?: Subscription;
 
   isSettingsModalOpen = false;
+  isHistoryModalOpen = false;
   isDarkMode = this.loadThemePreference() === 'dark';
   selectedHistoryView: HistoryViewMode = 'weekly';
   weeklyHistory: PomodoroDailyHistoryEntry[] =
@@ -229,6 +230,15 @@ export class PomodoroContainer implements OnDestroy {
   toggleTheme(): void {
     this.isDarkMode = !this.isDarkMode;
     this.saveThemePreference(this.isDarkMode ? 'dark' : 'light');
+  }
+
+  openHistoryModal(): void {
+    this.refreshHistory();
+    this.isHistoryModalOpen = true;
+  }
+
+  closeHistoryModal(): void {
+    this.isHistoryModalOpen = false;
   }
 
   openSettingsModal(): void {

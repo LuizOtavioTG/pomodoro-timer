@@ -135,31 +135,18 @@
 .history-summary {
   box-sizing: border-box;
   width: 100%;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 12px 28px rgba(4, 38, 30, 0.1), var(--shadow-inset-soft);
-  backdrop-filter: blur(10px);
 }
 
 .history-heading {
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 16px;
   margin-bottom: 12px;
 }
 
-.history-heading h2,
 .history-heading p {
   margin: 0;
-}
-
-.history-heading h2 {
-  color: var(--color-deep-teal);
-  font-size: 1.05rem;
-  line-height: 1.2;
 }
 
 .history-heading p {
@@ -325,6 +312,7 @@
 }
 
 .settings-button,
+.history-button,
 .theme-button,
 .modal-action-button {
   border: none;
@@ -339,6 +327,7 @@
 }
 
 .settings-button,
+.history-button,
 .theme-button {
   border: 1px solid var(--color-border);
   background: var(--color-subtle-surface);
@@ -346,12 +335,14 @@
 }
 
 .settings-button:hover,
+.history-button:hover,
 .theme-button:hover,
 .modal-action-button:hover {
   transform: translateY(-1px);
 }
 
 .settings-button:hover,
+.history-button:hover,
 .theme-button:hover {
   background: var(--color-subtle-hover);
 }
@@ -414,6 +405,7 @@
   }
 
   .settings-button,
+  .history-button,
   .theme-button {
     width: 100%;
   }

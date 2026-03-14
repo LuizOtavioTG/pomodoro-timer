@@ -172,9 +172,10 @@ describe('PomodoroContainer', () => {
   }));
 
   it('should display the weekly history summary', () => {
+    showHistoryPanel();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.querySelector('.history-summary')?.textContent)
+    expect(compiled.querySelector('.modal-title')?.textContent)
       .toContain('Historico');
     expect(compiled.querySelector('.history-summary')?.textContent)
       .toContain('Ultimos 7 dias');
@@ -182,7 +183,39 @@ describe('PomodoroContainer', () => {
     expect(compiled.querySelectorAll('.history-chart-item').length).toBe(7);
   });
 
+  it('should hide the history modal by default', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const historyButton = getToolbarButton('Historico');
+
+    expect(compiled.querySelector('.history-summary')).toBeNull();
+    expect(compiled.querySelector('.modal-backdrop')).toBeNull();
+    expect(component.isHistoryModalOpen).toBeFalse();
+    expect(historyButton.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('should open the history modal from the toolbar and close it from the modal', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const historyButton = getToolbarButton('Historico');
+
+    historyButton.click();
+    fixture.detectChanges();
+
+    expect(component.isHistoryModalOpen).toBeTrue();
+    expect(historyButton.getAttribute('aria-expanded')).toBe('true');
+    expect(compiled.querySelector('.history-summary')).not.toBeNull();
+    expect(compiled.querySelector('.modal-backdrop')).not.toBeNull();
+
+    (compiled.querySelector('.modal-close-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(component.isHistoryModalOpen).toBeFalse();
+    expect(historyButton.getAttribute('aria-expanded')).toBe('false');
+    expect(compiled.querySelector('.history-summary')).toBeNull();
+    expect(compiled.querySelector('.modal-backdrop')).toBeNull();
+  });
+
   it('should switch between daily and weekly history views', () => {
+    showHistoryPanel();
     const compiled = fixture.nativeElement as HTMLElement;
     const dailyButton = getHistoryViewButton('Diario');
     const weeklyButton = getHistoryViewButton('Semanal');
@@ -210,14 +243,15 @@ describe('PomodoroContainer', () => {
     expect(compiled.querySelectorAll('.history-chart-item').length).toBe(7);
   });
 
-  it('should keep history outside the main timer container', () => {
+  it('should render history inside the modal and outside the main timer container', () => {
+    showHistoryPanel();
     const compiled = fixture.nativeElement as HTMLElement;
     const timerContainer = compiled.querySelector('.pomodoro-container');
     const historySummary = compiled.querySelector('.history-summary');
 
     expect(timerContainer?.contains(historySummary)).toBeFalse();
-    expect(historySummary?.parentElement?.classList)
-      .toContain('pomodoro-layout');
+    expect(compiled.querySelector('.modal-body')?.contains(historySummary))
+      .toBeTrue();
   });
 
   it('should load completed pomodoros from history', () => {
@@ -239,6 +273,7 @@ describe('PomodoroContainer', () => {
     fixture = TestBed.createComponent(PomodoroContainer);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    showHistoryPanel();
 
     const compiled = fixture.nativeElement as HTMLElement;
     const historyTotals = compiled.querySelectorAll('.history-total strong');
@@ -268,6 +303,7 @@ describe('PomodoroContainer', () => {
     fixture = TestBed.createComponent(PomodoroContainer);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    showHistoryPanel();
 
     const compiled = fixture.nativeElement as HTMLElement;
     const chartItems = compiled.querySelectorAll('.history-chart-item');
@@ -283,6 +319,7 @@ describe('PomodoroContainer', () => {
   });
 
   it('should render empty chart bars for days without sessions', () => {
+    showHistoryPanel();
     const compiled = fixture.nativeElement as HTMLElement;
     const bars = Array.from(
       compiled.querySelectorAll('.history-bar')
@@ -298,6 +335,7 @@ describe('PomodoroContainer', () => {
     component.pomodoroTimer.start();
     tick(1000);
     fixture.detectChanges();
+    showHistoryPanel();
 
     const compiled = fixture.nativeElement as HTMLElement;
     const historyTotals = compiled.querySelectorAll('.history-total strong');
@@ -575,5 +613,22 @@ describe('PomodoroContainer', () => {
     ) as HTMLButtonElement[];
 
     return buttons.find((button) => button.textContent?.trim() === label)!;
+  }
+
+  function getToolbarButton(label: string): HTMLButtonElement {
+    const buttons = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll(
+        '.page-toolbar button'
+      )
+    ) as HTMLButtonElement[];
+
+    return buttons.find((button) => button.textContent?.trim() === label)!;
+  }
+
+  function showHistoryPanel(): void {
+    if (!component.isHistoryModalOpen) {
+      component.openHistoryModal();
+      fixture.detectChanges();
+    }
   }
 });

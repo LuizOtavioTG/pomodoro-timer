@@ -12,6 +12,17 @@
 
     <button
       type="button"
+      class="history-button"
+      aria-label="Abrir historico"
+      [attr.aria-expanded]="isHistoryModalOpen"
+      aria-controls="history-summary"
+      (click)="openHistoryModal()"
+    >
+      Historico
+    </button>
+
+    <button
+      type="button"
       class="settings-button"
       aria-label="Abrir configuracoes"
       [disabled]="pomodoroTimer.isRunning"
@@ -41,9 +52,20 @@
     ></app-timer-controls>
   </div>
 
-  <section class="history-summary" aria-labelledby="history-summary-title">
+</div>
+
+<app-modal
+  [isOpen]="isHistoryModalOpen"
+  title="Historico"
+  (closed)="closeHistoryModal()"
+>
+  <section
+    id="history-summary"
+    class="history-summary"
+    aria-label="Historico de pomodoros"
+    modalBody
+  >
     <div class="history-heading">
-      <h2 id="history-summary-title">Historico</h2>
       <p>{{ historyPeriodLabel }}</p>
     </div>
 
@@ -125,7 +147,7 @@
       }
     </div>
   </section>
-</div>
+</app-modal>
 
 <app-modal
   [isOpen]="isSettingsModalOpen"
