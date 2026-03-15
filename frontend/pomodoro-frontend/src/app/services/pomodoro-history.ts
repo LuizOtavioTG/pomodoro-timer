@@ -69,6 +69,32 @@ export class PomodoroHistoryService {
     });
   }
 
+  getCurrentStreak(): number {
+    const completedSessionDates = new Set(
+      this.getDailyHistory()
+        .filter((entry) => entry.completedSessions > 0)
+        .map((entry) => entry.date)
+    );
+    const today = new Date();
+    const streakStartDate = completedSessionDates.has(this.formatDate(today))
+      ? today
+      : this.getDateDaysAgo(1);
+
+    if (!completedSessionDates.has(this.formatDate(streakStartDate))) {
+      return 0;
+    }
+
+    let streak = 0;
+    const date = new Date(streakStartDate);
+
+    while (completedSessionDates.has(this.formatDate(date))) {
+      streak++;
+      date.setDate(date.getDate() - 1);
+    }
+
+    return streak;
+  }
+
   clearHistory(): void {
     localStorage.removeItem(POMODORO_HISTORY_STORAGE_KEY);
   }
@@ -85,8 +111,7 @@ export class PomodoroHistoryService {
 
   private getLastSevenDateStrings(): PomodoroHistoryDate[] {
     return Array.from({ length: 7 }, (_, daysAgo) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (6 - daysAgo));
+      const date = this.getDateDaysAgo(6 - daysAgo);
 
       return this.formatDate(date);
     });
@@ -102,5 +127,12 @@ export class PomodoroHistoryService {
     const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+  }
+
+  private getDateDaysAgo(daysAgo: number): Date {
+    const date = new Date();
+    date.setDate(date.getDate() - daysAgo);
+
+    return date;
   }
 }

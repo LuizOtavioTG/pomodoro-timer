@@ -159,6 +159,122 @@ describe('PomodoroHistoryService', () => {
       .toBeTrue();
   });
 
+  it('should return zero for the current streak when history is empty', () => {
+    expect(service.getCurrentStreak()).toBe(0);
+  });
+
+  it('should count today as the current streak when sessions were completed today', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getTodayDateString(),
+          completedSessions: 2,
+        },
+      ])
+    );
+
+    expect(service.getCurrentStreak()).toBe(1);
+  });
+
+  it('should keep yesterday streak active before a session is completed today', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringDaysAgo(2),
+          completedSessions: 1,
+        },
+        {
+          date: getPreviousDayDateString(),
+          completedSessions: 3,
+        },
+      ])
+    );
+
+    expect(service.getCurrentStreak()).toBe(2);
+  });
+
+  it('should count consecutive days through today', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringDaysAgo(3),
+          completedSessions: 1,
+        },
+        {
+          date: getDateStringDaysAgo(2),
+          completedSessions: 2,
+        },
+        {
+          date: getPreviousDayDateString(),
+          completedSessions: 1,
+        },
+        {
+          date: getTodayDateString(),
+          completedSessions: 4,
+        },
+      ])
+    );
+
+    expect(service.getCurrentStreak()).toBe(4);
+  });
+
+  it('should stop the current streak at missing days', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringDaysAgo(3),
+          completedSessions: 1,
+        },
+        {
+          date: getPreviousDayDateString(),
+          completedSessions: 1,
+        },
+        {
+          date: getTodayDateString(),
+          completedSessions: 1,
+        },
+      ])
+    );
+
+    expect(service.getCurrentStreak()).toBe(2);
+  });
+
+  it('should return zero when neither today nor yesterday has sessions', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringDaysAgo(2),
+          completedSessions: 1,
+        },
+      ])
+    );
+
+    expect(service.getCurrentStreak()).toBe(0);
+  });
+
+  it('should not count days with zero completed sessions in the current streak', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getPreviousDayDateString(),
+          completedSessions: 0,
+        },
+        {
+          date: getTodayDateString(),
+          completedSessions: 1,
+        },
+      ])
+    );
+
+    expect(service.getCurrentStreak()).toBe(1);
+  });
+
   it('should clear saved history', () => {
     service.addCompletedSession();
 
