@@ -284,6 +284,29 @@ describe('PomodoroContainer', () => {
       .toContain(formatHistoryDate(getTodayDateString()));
   });
 
+  it('should load the current streak from history', () => {
+    fixture.destroy();
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringDaysAgo(2),
+          completedSessions: 1,
+        },
+        {
+          date: getDateStringDaysAgo(1),
+          completedSessions: 2,
+        },
+      ])
+    );
+
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.currentStreak).toBe(2);
+  });
+
   it('should scale history chart bars by the weekly maximum', () => {
     fixture.destroy();
     localStorage.setItem(
@@ -342,6 +365,15 @@ describe('PomodoroContainer', () => {
 
     expect(historyTotals[0].textContent?.trim()).toBe('1');
     expect(historyTotals[1].textContent?.trim()).toBe('1');
+  }));
+
+  it('should update the current streak when a focus session ends', fakeAsync(() => {
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(component.currentStreak).toBe(1);
   }));
 
   it('should prepare sound before starting the timer from the unified control', () => {

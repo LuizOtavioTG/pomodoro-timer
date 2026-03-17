@@ -67,6 +67,7 @@ export class PomodoroContainer implements OnDestroy {
   selectedHistoryView: HistoryViewMode = 'weekly';
   weeklyHistory: PomodoroDailyHistoryEntry[] =
     this.pomodoroHistory.getWeeklyHistory();
+  currentStreak = this.pomodoroHistory.getCurrentStreak();
   settingsForm: PomodoroSettings = this.createSettingsSnapshot();
   browserNotificationPermissionStatus: BrowserNotificationPermissionStatus =
     this.browserNotification.getPermissionStatus();
@@ -302,6 +303,7 @@ export class PomodoroContainer implements OnDestroy {
 
   private refreshHistory(): void {
     this.weeklyHistory = this.pomodoroHistory.getWeeklyHistory();
+    this.currentStreak = this.pomodoroHistory.getCurrentStreak();
   }
 
   private updateDocumentTitle(): void {
