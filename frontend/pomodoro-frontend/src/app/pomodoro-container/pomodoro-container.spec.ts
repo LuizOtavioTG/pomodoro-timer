@@ -280,6 +280,7 @@ describe('PomodoroContainer', () => {
 
     expect(historyTotals[0].textContent?.trim()).toBe('3');
     expect(historyTotals[1].textContent?.trim()).toBe('5');
+    expect(historyTotals[2].textContent?.trim()).toBe('2');
     expect(compiled.querySelector('.history-summary')?.textContent)
       .toContain(formatHistoryDate(getTodayDateString()));
   });
@@ -365,6 +366,7 @@ describe('PomodoroContainer', () => {
 
     expect(historyTotals[0].textContent?.trim()).toBe('1');
     expect(historyTotals[1].textContent?.trim()).toBe('1');
+    expect(historyTotals[2].textContent?.trim()).toBe('1');
   }));
 
   it('should update the current streak when a focus session ends', fakeAsync(() => {
