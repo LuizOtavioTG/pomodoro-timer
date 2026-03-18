@@ -177,6 +177,38 @@ describe('PomodoroHistoryService', () => {
     expect(service.getCurrentStreak()).toBe(1);
   });
 
+  it('should count multiple sessions on the same day as one streak day', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getTodayDateString(),
+          completedSessions: 5,
+        },
+      ])
+    );
+
+    expect(service.getCurrentStreak()).toBe(1);
+  });
+
+  it('should count yesterday and today as a two-day streak', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getPreviousDayDateString(),
+          completedSessions: 1,
+        },
+        {
+          date: getTodayDateString(),
+          completedSessions: 1,
+        },
+      ])
+    );
+
+    expect(service.getCurrentStreak()).toBe(2);
+  });
+
   it('should keep yesterday streak active before a session is completed today', () => {
     localStorage.setItem(
       POMODORO_HISTORY_STORAGE_KEY,
