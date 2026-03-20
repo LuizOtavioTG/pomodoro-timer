@@ -1,18 +1,23 @@
 <div class="timer-controls">
   <button
-    class="control-button primary"
+    class="control-button primary icon-label-button"
     type="button"
     [attr.aria-label]="isRunning ? 'Pausar timer' : 'Iniciar timer'"
     (click)="toggleClicked.emit()"
   >
-    {{ isRunning ? 'Pausar' : 'Iniciar' }}
+    <span class="material-icons" aria-hidden="true">
+      {{ isRunning ? 'pause' : 'play_arrow' }}
+    </span>
+    <span class="button-label">{{ isRunning ? 'Pausar' : 'Iniciar' }}</span>
   </button>
   <button
-    class="control-button danger"
+    class="control-button danger icon-label-button"
     type="button"
+    aria-label="Resetar timer"
     [disabled]="isResetDisabled"
     (click)="resetClicked.emit()"
   >
-    Resetar
+    <span class="material-icons" aria-hidden="true">restart_alt</span>
+    <span class="button-label">Resetar</span>
   </button>
 </div>

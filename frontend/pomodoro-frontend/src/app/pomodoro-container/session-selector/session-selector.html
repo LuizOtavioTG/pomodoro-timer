@@ -1,26 +1,35 @@
 <div class="session-selector">
   <button
-    class="session-button"
+    class="session-button session-button-with-icon"
+    type="button"
+    aria-label="Selecionar pomodoro curto"
     [class.active]="selectedSession === 'short'"
     [disabled]="isDisabled"
     (click)="selectSession('short')"
   >
-    Curto
+    <span class="material-icons" aria-hidden="true">timer</span>
+    <span>Curto</span>
   </button>
   <button
-    class="session-button"
+    class="session-button session-button-with-icon"
+    type="button"
+    aria-label="Selecionar pomodoro longo"
     [class.active]="selectedSession === 'long'"
     [disabled]="isDisabled"
     (click)="selectSession('long')"
   >
-    Longo
+    <span class="material-icons" aria-hidden="true">hourglass_top</span>
+    <span>Longo</span>
   </button>
   <button
-    class="session-button"
+    class="session-button session-button-with-icon"
+    type="button"
+    aria-label="Selecionar descanso"
     [class.active]="selectedSession === 'break'"
     [disabled]="isDisabled"
     (click)="selectSession('break')"
   >
-    Descanso
+    <span class="material-icons" aria-hidden="true">free_breakfast</span>
+    <span>Descanso</span>
   </button>
 </div>

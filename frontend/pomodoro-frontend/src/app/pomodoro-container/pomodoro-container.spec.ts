@@ -708,7 +708,10 @@ describe('PomodoroContainer', () => {
       )
     ) as HTMLButtonElement[];
 
-    return buttons.find((button) => button.textContent?.trim() === label)!;
+    return buttons.find(
+      (button) =>
+        button.querySelector('.button-label')?.textContent?.trim() === label
+    )!;
   }
 
   function getToolbarButton(label: string): HTMLButtonElement {
@@ -718,7 +721,10 @@ describe('PomodoroContainer', () => {
       )
     ) as HTMLButtonElement[];
 
-    return buttons.find((button) => button.textContent?.trim() === label)!;
+    return buttons.find(
+      (button) =>
+        button.querySelector('.button-label')?.textContent?.trim() === label
+    )!;
   }
 
   function showHistoryPanel(): void {

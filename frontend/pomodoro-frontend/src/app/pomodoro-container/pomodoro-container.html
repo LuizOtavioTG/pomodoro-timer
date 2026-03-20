@@ -2,33 +2,38 @@
   <div class="page-toolbar">
     <button
       type="button"
-      class="theme-button"
+      class="theme-button icon-label-button"
       [attr.aria-label]="isDarkMode ? 'Ativar tema claro' : 'Ativar tema escuro'"
       [attr.aria-pressed]="isDarkMode"
       (click)="toggleTheme()"
     >
-      {{ isDarkMode ? 'Claro' : 'Escuro' }}
+      <span class="material-icons" aria-hidden="true">
+        {{ isDarkMode ? 'light_mode' : 'dark_mode' }}
+      </span>
+      <span class="button-label">{{ isDarkMode ? 'Claro' : 'Escuro' }}</span>
     </button>
 
     <button
       type="button"
-      class="history-button"
+      class="history-button icon-label-button"
       aria-label="Abrir historico"
       [attr.aria-expanded]="isHistoryModalOpen"
       aria-controls="history-summary"
       (click)="openHistoryModal()"
     >
-      Historico
+      <span class="material-icons" aria-hidden="true">history</span>
+      <span class="button-label">Historico</span>
     </button>
 
     <button
       type="button"
-      class="settings-button"
+      class="settings-button icon-label-button"
       aria-label="Abrir configuracoes"
       [disabled]="pomodoroTimer.isRunning"
       (click)="openSettingsModal()"
     >
-      ⚙
+      <span class="material-icons" aria-hidden="true">settings</span>
+      <span class="button-label">Configuracoes</span>
     </button>
   </div>
 
@@ -76,22 +81,24 @@
     >
       <button
         type="button"
-        class="history-view-button"
+        class="history-view-button icon-label-button"
         [class.active]="selectedHistoryView === 'daily'"
         [attr.aria-pressed]="selectedHistoryView === 'daily'"
         (click)="selectHistoryView('daily')"
       >
-        Diario
+        <span class="material-icons" aria-hidden="true">calendar_today</span>
+        <span class="button-label">Diario</span>
       </button>
 
       <button
         type="button"
-        class="history-view-button"
+        class="history-view-button icon-label-button"
         [class.active]="selectedHistoryView === 'weekly'"
         [attr.aria-pressed]="selectedHistoryView === 'weekly'"
         (click)="selectHistoryView('weekly')"
       >
-        Semanal
+        <span class="material-icons" aria-hidden="true">view_week</span>
+        <span class="button-label">Semanal</span>
       </button>
     </div>
 
@@ -173,27 +180,30 @@
   <div modalActions>
     <button
       type="button"
-      class="modal-action-button secondary-action"
+      class="modal-action-button secondary-action icon-label-button"
       (click)="restoreDefaultSettings()"
     >
-      Restaurar padrao
+      <span class="material-icons" aria-hidden="true">restore</span>
+      <span class="button-label">Restaurar padrao</span>
     </button>
 
     <button
       type="button"
-      class="modal-action-button ghost-action"
+      class="modal-action-button ghost-action icon-label-button"
       (click)="closeSettingsModal()"
     >
-      Cancelar
+      <span class="material-icons" aria-hidden="true">close</span>
+      <span class="button-label">Cancelar</span>
     </button>
 
     <button
       type="button"
-      class="modal-action-button"
+      class="modal-action-button icon-label-button"
       [disabled]="!canSaveSettings()"
       (click)="saveSettings()"
     >
-      Salvar
+      <span class="material-icons" aria-hidden="true">save</span>
+      <span class="button-label">Salvar</span>
     </button>
   </div>
 </app-modal>
