@@ -101,14 +101,16 @@
         <strong>{{ completedPomodorosFromHistoryToday }}</strong>
       </div>
 
-      <div class="history-total">
-        <span class="history-total-label">Semana</span>
-        <strong>{{ completedPomodorosThisWeek }}</strong>
-      </div>
+      @if (selectedHistoryView === 'weekly') {
+        <div class="history-total">
+          <span class="history-total-label">Semana</span>
+          <strong>{{ completedPomodorosThisWeek }}</strong>
+        </div>
+      }
 
       <div class="history-total">
-        <span class="history-total-label">Sequencia</span>
-        <strong>{{ currentStreak }}</strong>
+        <span class="history-total-label">Sequência</span>
+        <strong>{{ displayedStreak }}</strong>
       </div>
     </div>
 

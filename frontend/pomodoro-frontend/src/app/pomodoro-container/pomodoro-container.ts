@@ -68,6 +68,7 @@ export class PomodoroContainer implements OnDestroy {
   weeklyHistory: PomodoroDailyHistoryEntry[] =
     this.pomodoroHistory.getWeeklyHistory();
   currentStreak = this.pomodoroHistory.getCurrentStreak();
+  currentWeeklyStreak = this.pomodoroHistory.getCurrentWeeklyStreak();
   settingsForm: PomodoroSettings = this.createSettingsSnapshot();
   browserNotificationPermissionStatus: BrowserNotificationPermissionStatus =
     this.browserNotification.getPermissionStatus();
@@ -120,6 +121,14 @@ export class PomodoroContainer implements OnDestroy {
 
     return this.weeklyHistory.find((entry) => entry.date === today)
       ?.completedSessions ?? 0;
+  }
+
+  get displayedStreak(): number {
+    if (this.selectedHistoryView === 'daily') {
+      return this.currentStreak;
+    }
+
+    return this.currentWeeklyStreak;
   }
 
   get displayedHistory(): PomodoroDailyHistoryEntry[] {
@@ -304,6 +313,7 @@ export class PomodoroContainer implements OnDestroy {
   private refreshHistory(): void {
     this.weeklyHistory = this.pomodoroHistory.getWeeklyHistory();
     this.currentStreak = this.pomodoroHistory.getCurrentStreak();
+    this.currentWeeklyStreak = this.pomodoroHistory.getCurrentWeeklyStreak();
   }
 
   private updateDocumentTitle(): void {

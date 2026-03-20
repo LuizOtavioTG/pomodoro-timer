@@ -95,6 +95,37 @@ export class PomodoroHistoryService {
     return streak;
   }
 
+  getCurrentWeeklyStreak(): number {
+    const completedSessionWeekStartDates = new Set(
+      this.getDailyHistory()
+        .filter((entry) => entry.completedSessions > 0)
+        .map((entry) => this.parseDate(entry.date))
+        .map((date) => this.formatDate(this.getWeekStartDate(date)))
+    );
+    const currentWeekStartDate = this.getWeekStartDate(new Date());
+    const previousWeekStartDate = new Date(currentWeekStartDate);
+    previousWeekStartDate.setDate(previousWeekStartDate.getDate() - 7);
+    const streakStartDate = completedSessionWeekStartDates.has(
+      this.formatDate(currentWeekStartDate)
+    )
+      ? currentWeekStartDate
+      : previousWeekStartDate;
+
+    if (!completedSessionWeekStartDates.has(this.formatDate(streakStartDate))) {
+      return 0;
+    }
+
+    let streak = 0;
+    const weekStartDate = new Date(streakStartDate);
+
+    while (completedSessionWeekStartDates.has(this.formatDate(weekStartDate))) {
+      streak++;
+      weekStartDate.setDate(weekStartDate.getDate() - 7);
+    }
+
+    return streak;
+  }
+
   clearHistory(): void {
     localStorage.removeItem(POMODORO_HISTORY_STORAGE_KEY);
   }
@@ -129,10 +160,25 @@ export class PomodoroHistoryService {
     return `${year}-${month}-${day}`;
   }
 
+  private parseDate(date: PomodoroHistoryDate): Date {
+    const [year, month, day] = date.split('-').map(Number);
+
+    return new Date(year, month - 1, day);
+  }
+
   private getDateDaysAgo(daysAgo: number): Date {
     const date = new Date();
     date.setDate(date.getDate() - daysAgo);
 
     return date;
+  }
+
+  private getWeekStartDate(date: Date): Date {
+    const weekStartDate = new Date(date);
+    const daysSinceMonday = (weekStartDate.getDay() + 6) % 7;
+    weekStartDate.setHours(0, 0, 0, 0);
+    weekStartDate.setDate(weekStartDate.getDate() - daysSinceMonday);
+
+    return weekStartDate;
   }
 }

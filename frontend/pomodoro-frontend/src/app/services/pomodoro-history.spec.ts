@@ -307,6 +307,64 @@ describe('PomodoroHistoryService', () => {
     expect(service.getCurrentStreak()).toBe(1);
   });
 
+  it('should return zero for the current weekly streak when history is empty', () => {
+    expect(service.getCurrentWeeklyStreak()).toBe(0);
+  });
+
+  it('should count the current week in the weekly streak', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringWeeksAgo(0),
+          completedSessions: 2,
+        },
+      ])
+    );
+
+    expect(service.getCurrentWeeklyStreak()).toBe(1);
+  });
+
+  it('should count consecutive weeks in the weekly streak', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringWeeksAgo(2),
+          completedSessions: 1,
+        },
+        {
+          date: getDateStringWeeksAgo(1),
+          completedSessions: 3,
+        },
+        {
+          date: getDateStringWeeksAgo(0),
+          completedSessions: 2,
+        },
+      ])
+    );
+
+    expect(service.getCurrentWeeklyStreak()).toBe(3);
+  });
+
+  it('should keep the previous week streak active before the current week has sessions', () => {
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringWeeksAgo(2),
+          completedSessions: 1,
+        },
+        {
+          date: getDateStringWeeksAgo(1),
+          completedSessions: 1,
+        },
+      ])
+    );
+
+    expect(service.getCurrentWeeklyStreak()).toBe(2);
+  });
+
   it('should clear saved history', () => {
     service.addCompletedSession();
 
@@ -327,6 +385,26 @@ describe('PomodoroHistoryService', () => {
   function getDateStringDaysAgo(daysAgo: number): string {
     const date = new Date();
     date.setDate(date.getDate() - daysAgo);
+
+    return formatDate(date);
+  }
+
+  function getDateStringWeeksAgo(weeksAgo: number): string {
+    const date = getCurrentWeekStartDate();
+    date.setDate(date.getDate() - weeksAgo * 7);
+
+    return formatDate(date);
+  }
+
+  function getCurrentWeekStartDate(): Date {
+    const date = new Date();
+    const daysSinceMonday = (date.getDay() + 6) % 7;
+    date.setDate(date.getDate() - daysSinceMonday);
+
+    return date;
+  }
+
+  function formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');

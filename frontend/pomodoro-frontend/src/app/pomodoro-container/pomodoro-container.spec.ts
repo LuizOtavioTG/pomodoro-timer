@@ -227,6 +227,11 @@ describe('PomodoroContainer', () => {
     expect(dailyButton.getAttribute('aria-pressed')).toBe('true');
     expect(compiled.querySelector('.history-heading')?.textContent)
       .toContain('Hoje');
+    expect(compiled.querySelectorAll('.history-total').length).toBe(2);
+    expect(compiled.querySelector('.history-totals')?.textContent)
+      .not.toContain('Semana');
+    expect(compiled.querySelector('.history-totals')?.textContent)
+      .toContain('Sequência');
     expect(compiled.querySelectorAll('.history-list-item').length).toBe(1);
     expect(compiled.querySelectorAll('.history-chart-item').length).toBe(1);
     expect(compiled.querySelector('.history-chart')?.getAttribute('aria-label'))
@@ -239,6 +244,9 @@ describe('PomodoroContainer', () => {
     expect(weeklyButton.getAttribute('aria-pressed')).toBe('true');
     expect(compiled.querySelector('.history-heading')?.textContent)
       .toContain('Ultimos 7 dias');
+    expect(compiled.querySelectorAll('.history-total').length).toBe(3);
+    expect(compiled.querySelector('.history-totals')?.textContent)
+      .toContain('Semana');
     expect(compiled.querySelectorAll('.history-list-item').length).toBe(7);
     expect(compiled.querySelectorAll('.history-chart-item').length).toBe(7);
   });
@@ -280,7 +288,9 @@ describe('PomodoroContainer', () => {
 
     expect(historyTotals[0].textContent?.trim()).toBe('3');
     expect(historyTotals[1].textContent?.trim()).toBe('5');
-    expect(historyTotals[2].textContent?.trim()).toBe('2');
+    expect(historyTotals[2].textContent?.trim()).toBe(
+      component.currentWeeklyStreak.toString()
+    );
     expect(compiled.querySelector('.history-summary')?.textContent)
       .toContain(formatHistoryDate(getTodayDateString()));
   });
@@ -306,6 +316,29 @@ describe('PomodoroContainer', () => {
     fixture.detectChanges();
 
     expect(component.currentStreak).toBe(2);
+  });
+
+  it('should load the current weekly streak from history', () => {
+    fixture.destroy();
+    localStorage.setItem(
+      POMODORO_HISTORY_STORAGE_KEY,
+      JSON.stringify([
+        {
+          date: getDateStringWeeksAgo(1),
+          completedSessions: 1,
+        },
+        {
+          date: getDateStringWeeksAgo(0),
+          completedSessions: 2,
+        },
+      ])
+    );
+
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.currentWeeklyStreak).toBe(2);
   });
 
   it('should scale history chart bars by the weekly maximum', () => {
@@ -376,6 +409,15 @@ describe('PomodoroContainer', () => {
     tick(1000);
 
     expect(component.currentStreak).toBe(1);
+  }));
+
+  it('should update the current weekly streak when a focus session ends', fakeAsync(() => {
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(component.currentWeeklyStreak).toBe(1);
   }));
 
   it('should prepare sound before starting the timer from the unified control', () => {
@@ -626,6 +668,26 @@ describe('PomodoroContainer', () => {
   function getDateStringDaysAgo(daysAgo: number): string {
     const date = new Date();
     date.setDate(date.getDate() - daysAgo);
+
+    return formatDate(date);
+  }
+
+  function getDateStringWeeksAgo(weeksAgo: number): string {
+    const date = getCurrentWeekStartDate();
+    date.setDate(date.getDate() - weeksAgo * 7);
+
+    return formatDate(date);
+  }
+
+  function getCurrentWeekStartDate(): Date {
+    const date = new Date();
+    const daysSinceMonday = (date.getDay() + 6) % 7;
+    date.setDate(date.getDate() - daysSinceMonday);
+
+    return date;
+  }
+
+  function formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');

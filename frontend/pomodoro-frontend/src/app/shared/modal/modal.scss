@@ -15,8 +15,8 @@
 }
 
 .modal-panel {
-  width: min(100%, 480px);
-  max-height: min(100vh - 48px, 720px);
+  width: min(100%, 640px);
+  max-height: min(100vh - 48px, 820px);
   overflow: auto;
   border-radius: 24px;
   border: 1px solid var(--color-border);
@@ -65,7 +65,7 @@
 }
 
 .modal-body {
-  padding: 20px 24px 0;
+  padding: 20px 24px 24px;
   color: var(--color-muted);
 }
 
@@ -95,7 +95,7 @@
   }
 
   .modal-body {
-    padding: 16px 20px 0;
+    padding: 16px 20px 20px;
   }
 
   .modal-actions {
