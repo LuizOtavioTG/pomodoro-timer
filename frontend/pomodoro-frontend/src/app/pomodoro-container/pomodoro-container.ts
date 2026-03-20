@@ -6,6 +6,7 @@ import {
   OnDestroy,
   inject,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { interval, Subscription } from 'rxjs';
 import { TimerDisplay } from "./timer-display/timer-display";
@@ -36,10 +37,18 @@ const THEME_STORAGE_KEY = 'pomodoro-theme';
 type PomodoroTheme = 'light' | 'dark';
 type HistoryViewMode = 'daily' | 'weekly';
 
+interface PomodoroTask {
+  id: number;
+  title: string;
+  completed: boolean;
+  pomodorosCount: number;
+}
+
 @Component({
   selector: 'app-pomodoro-container',
   standalone:true,
   imports: [
+    FormsModule,
     TimerDisplay,
     SessionSelector,
     TimerControls,
@@ -65,6 +74,9 @@ export class PomodoroContainer implements OnDestroy {
   isHistoryModalOpen = false;
   isDarkMode = this.loadThemePreference() === 'dark';
   selectedHistoryView: HistoryViewMode = 'weekly';
+  tasks: PomodoroTask[] = [];
+  newTaskTitle = '';
+  private nextTaskId = 1;
   weeklyHistory: PomodoroDailyHistoryEntry[] =
     this.pomodoroHistory.getWeeklyHistory();
   currentStreak = this.pomodoroHistory.getCurrentStreak();
@@ -235,6 +247,43 @@ export class PomodoroContainer implements OnDestroy {
 
     this.pomodoroTimer.reset();
     this.updateDocumentTitle();
+  }
+
+  addTask(): void {
+    const title = this.newTaskTitle.trim();
+
+    if (title.length === 0) {
+      return;
+    }
+
+    this.tasks = [
+      ...this.tasks,
+      {
+        id: this.nextTaskId,
+        title,
+        completed: false,
+        pomodorosCount: 0,
+      },
+    ];
+    this.nextTaskId += 1;
+    this.newTaskTitle = '';
+  }
+
+  toggleTaskCompleted(taskId: number): void {
+    this.tasks = this.tasks.map((task) => {
+      if (task.id !== taskId) {
+        return task;
+      }
+
+      return {
+        ...task,
+        completed: !task.completed,
+      };
+    });
+  }
+
+  removeTask(taskId: number): void {
+    this.tasks = this.tasks.filter((task) => task.id !== taskId);
   }
 
   toggleTheme(): void {

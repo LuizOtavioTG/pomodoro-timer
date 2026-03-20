@@ -127,6 +127,62 @@ describe('PomodoroContainer', () => {
       .toContain('4 pomodoros concluidos hoje');
   });
 
+  it('should add a task from the task form', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const taskInput = compiled.querySelector(
+      '#new-task-title'
+    ) as HTMLInputElement;
+
+    taskInput.value = 'Revisar PR';
+    taskInput.dispatchEvent(new Event('input'));
+    compiled.querySelector('form.task-form')?.dispatchEvent(
+      new Event('submit')
+    );
+    fixture.detectChanges();
+
+    expect(component.tasks).toEqual([
+      {
+        id: 1,
+        title: 'Revisar PR',
+        completed: false,
+        pomodorosCount: 0,
+      },
+    ]);
+    expect(component.newTaskTitle).toBe('');
+    expect(compiled.querySelector('.task-list')?.textContent)
+      .toContain('Revisar PR');
+    expect(compiled.querySelector('.task-list')?.textContent)
+      .toContain('0 pomodoros');
+  });
+
+  it('should not add an empty task', () => {
+    component.newTaskTitle = '   ';
+
+    component.addTask();
+
+    expect(component.tasks).toEqual([]);
+  });
+
+  it('should toggle and remove tasks', () => {
+    component.newTaskTitle = 'Planejar sprint';
+    component.addTask();
+
+    component.toggleTaskCompleted(1);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(component.tasks[0].completed).toBeTrue();
+    expect(compiled.querySelector('.task-list-item')?.classList)
+      .toContain('completed');
+
+    component.removeTask(1);
+    fixture.detectChanges();
+
+    expect(component.tasks).toEqual([]);
+    expect(compiled.querySelector('.task-empty-state')?.textContent)
+      .toContain('Nenhuma tarefa adicionada.');
+  });
+
   it('should toggle dark mode and persist the theme preference', () => {
     component.toggleTheme();
     fixture.detectChanges();

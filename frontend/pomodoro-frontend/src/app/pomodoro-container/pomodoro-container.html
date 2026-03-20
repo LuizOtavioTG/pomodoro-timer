@@ -57,6 +57,82 @@
     ></app-timer-controls>
   </div>
 
+  <section class="task-panel" aria-labelledby="task-panel-title">
+    <div class="task-panel-header">
+      <div>
+        <h2 id="task-panel-title">Tarefas</h2>
+        <p>Organize o foco antes de iniciar o timer.</p>
+      </div>
+    </div>
+
+    <form class="task-form" (ngSubmit)="addTask()">
+      <label class="task-input-label" for="new-task-title">
+        Nova tarefa
+      </label>
+      <div class="task-form-row">
+        <input
+          id="new-task-title"
+          name="newTaskTitle"
+          type="text"
+          class="task-input"
+          autocomplete="off"
+          placeholder="Ex: Revisar PR"
+          [(ngModel)]="newTaskTitle"
+        />
+        <button
+          type="submit"
+          class="task-add-button"
+          [disabled]="newTaskTitle.trim().length === 0"
+          aria-label="Adicionar tarefa"
+        >
+          <span class="material-icons" aria-hidden="true">add</span>
+        </button>
+      </div>
+    </form>
+
+    @if (tasks.length > 0) {
+      <ul class="task-list" aria-label="Lista de tarefas">
+        @for (task of tasks; track task.id) {
+          <li class="task-list-item" [class.completed]="task.completed">
+            <button
+              type="button"
+              class="task-complete-button"
+              [attr.aria-label]="
+                task.completed
+                  ? 'Marcar tarefa como pendente'
+                  : 'Marcar tarefa como concluida'
+              "
+              [attr.aria-pressed]="task.completed"
+              (click)="toggleTaskCompleted(task.id)"
+            >
+              <span class="material-icons" aria-hidden="true">
+                {{ task.completed ? 'check_box' : 'check_box_outline_blank' }}
+              </span>
+            </button>
+
+            <div class="task-content">
+              <span class="task-title">{{ task.title }}</span>
+              <span class="task-pomodoro-count">
+                {{ task.pomodorosCount }}
+                {{ task.pomodorosCount === 1 ? 'pomodoro' : 'pomodoros' }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              class="task-remove-button"
+              aria-label="Remover tarefa"
+              (click)="removeTask(task.id)"
+            >
+              <span class="material-icons" aria-hidden="true">delete</span>
+            </button>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="task-empty-state">Nenhuma tarefa adicionada.</p>
+    }
+  </section>
 </div>
 
 <app-modal
