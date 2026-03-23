@@ -183,6 +183,58 @@ describe('PomodoroContainer', () => {
       .toContain('Nenhuma tarefa adicionada.');
   });
 
+  it('should show a message when no task is selected', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.querySelector('.active-task-message')?.textContent)
+      .toContain('Sem tarefa selecionada');
+  });
+
+  it('should select an active task from the task list', () => {
+    component.newTaskTitle = 'Escrever testes';
+    component.addTask();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const taskSelectButton = compiled.querySelector(
+      '.task-select-button'
+    ) as HTMLButtonElement;
+
+    taskSelectButton.click();
+    fixture.detectChanges();
+
+    expect(component.activeTaskId).toBe(1);
+    expect(component.activeTask?.title).toBe('Escrever testes');
+    expect(compiled.querySelector('.active-task-message')?.textContent)
+      .toContain('Focando em: Escrever testes');
+    expect(compiled.querySelector('.task-list-item')?.classList)
+      .toContain('active');
+    expect(taskSelectButton.getAttribute('aria-current')).toBe('true');
+  });
+
+  it('should allow starting the timer without an active task', () => {
+    spyOn(component.pomodoroTimer, 'start');
+
+    component.onTimerToggleClicked();
+
+    expect(component.activeTaskId).toBeNull();
+    expect(component.pomodoroTimer.start).toHaveBeenCalled();
+  });
+
+  it('should clear the active task when it is removed', () => {
+    component.newTaskTitle = 'Ler documentacao';
+    component.addTask();
+    component.selectTask(1);
+
+    component.removeTask(1);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(component.activeTaskId).toBeNull();
+    expect(compiled.querySelector('.active-task-message')?.textContent)
+      .toContain('Sem tarefa selecionada');
+  });
+
   it('should toggle dark mode and persist the theme preference', () => {
     component.toggleTheme();
     fixture.detectChanges();

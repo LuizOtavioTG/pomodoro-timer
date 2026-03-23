@@ -76,6 +76,7 @@ export class PomodoroContainer implements OnDestroy {
   selectedHistoryView: HistoryViewMode = 'weekly';
   tasks: PomodoroTask[] = [];
   newTaskTitle = '';
+  activeTaskId: number | null = null;
   private nextTaskId = 1;
   weeklyHistory: PomodoroDailyHistoryEntry[] =
     this.pomodoroHistory.getWeeklyHistory();
@@ -119,6 +120,18 @@ export class PomodoroContainer implements OnDestroy {
     }
 
     return `${completedPomodoros} pomodoros concluidos hoje`;
+  }
+
+  get activeTask(): PomodoroTask | null {
+    return this.tasks.find((task) => task.id === this.activeTaskId) ?? null;
+  }
+
+  get activeTaskMessage(): string {
+    if (this.activeTask === null) {
+      return 'Sem tarefa selecionada';
+    }
+
+    return `Focando em: ${this.activeTask.title}`;
   }
 
   get completedPomodorosThisWeek(): number {
@@ -269,6 +282,10 @@ export class PomodoroContainer implements OnDestroy {
     this.newTaskTitle = '';
   }
 
+  selectTask(taskId: number): void {
+    this.activeTaskId = taskId;
+  }
+
   toggleTaskCompleted(taskId: number): void {
     this.tasks = this.tasks.map((task) => {
       if (task.id !== taskId) {
@@ -284,6 +301,10 @@ export class PomodoroContainer implements OnDestroy {
 
   removeTask(taskId: number): void {
     this.tasks = this.tasks.filter((task) => task.id !== taskId);
+
+    if (this.activeTaskId === taskId) {
+      this.activeTaskId = null;
+    }
   }
 
   toggleTheme(): void {

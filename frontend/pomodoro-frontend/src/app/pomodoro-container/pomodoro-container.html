@@ -49,6 +49,9 @@
     <p class="daily-pomodoro-count" aria-live="polite">
       {{ dailyPomodoroProgressMessage }}
     </p>
+    <p class="active-task-message" aria-live="polite">
+      {{ activeTaskMessage }}
+    </p>
     <app-timer-controls
       [isRunning]="pomodoroTimer.isRunning"
       [isResetDisabled]="pomodoroTimer.isRunning"
@@ -93,7 +96,11 @@
     @if (tasks.length > 0) {
       <ul class="task-list" aria-label="Lista de tarefas">
         @for (task of tasks; track task.id) {
-          <li class="task-list-item" [class.completed]="task.completed">
+          <li
+            class="task-list-item"
+            [class.active]="activeTaskId === task.id"
+            [class.completed]="task.completed"
+          >
             <button
               type="button"
               class="task-complete-button"
@@ -110,13 +117,19 @@
               </span>
             </button>
 
-            <div class="task-content">
+            <button
+              type="button"
+              class="task-select-button"
+              [attr.aria-label]="'Selecionar tarefa ' + task.title"
+              [attr.aria-current]="activeTaskId === task.id ? 'true' : null"
+              (click)="selectTask(task.id)"
+            >
               <span class="task-title">{{ task.title }}</span>
               <span class="task-pomodoro-count">
                 {{ task.pomodorosCount }}
                 {{ task.pomodorosCount === 1 ? 'pomodoro' : 'pomodoros' }}
               </span>
-            </div>
+            </button>
 
             <button
               type="button"
