@@ -95,6 +95,7 @@ export class PomodoroContainer implements OnDestroy {
     this.pomodoroTimer.sessionCompleted$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((sessionCompletion) => {
+        this.addCompletedPomodoroToActiveTask(sessionCompletion);
         this.refreshHistory();
         this.playSessionEndSound();
         this.showSessionEndBrowserNotification(sessionCompletion);
@@ -374,6 +375,28 @@ export class PomodoroContainer implements OnDestroy {
         this.browserNotificationPermissionStatus === 'granted',
     };
     this.disableBrowserNotificationsWhenPermissionIsUnavailable();
+  }
+
+  private addCompletedPomodoroToActiveTask(
+    sessionCompletion: PomodoroSessionCompletion
+  ): void {
+    if (
+      sessionCompletion.completedSession === 'break'
+      || this.activeTaskId === null
+    ) {
+      return;
+    }
+
+    this.tasks = this.tasks.map((task) => {
+      if (task.id !== this.activeTaskId) {
+        return task;
+      }
+
+      return {
+        ...task,
+        pomodorosCount: task.pomodorosCount + 1,
+      };
+    });
   }
 
   private createSettingsSnapshot(): PomodoroSettings {

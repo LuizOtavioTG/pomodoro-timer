@@ -235,6 +235,46 @@ describe('PomodoroContainer', () => {
       .toContain('Sem tarefa selecionada');
   });
 
+  it('should increment the active task pomodoro count when a focus session ends', fakeAsync(() => {
+    component.newTaskTitle = 'Implementar tarefa';
+    component.addTask();
+    component.selectTask(1);
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(component.tasks[0].pomodorosCount).toBe(1);
+    expect(compiled.querySelector('.task-pomodoro-count')?.textContent)
+      .toContain('1 pomodoro');
+  }));
+
+  it('should not increment a task when a break session ends', fakeAsync(() => {
+    component.newTaskTitle = 'Revisar notas';
+    component.addTask();
+    component.selectTask(1);
+    component.pomodoroTimer.selectSession('break');
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(component.tasks[0].pomodorosCount).toBe(0);
+  }));
+
+  it('should not increment any task when no task is active', fakeAsync(() => {
+    component.newTaskTitle = 'Sem selecao';
+    component.addTask();
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    expect(component.tasks[0].pomodorosCount).toBe(0);
+  }));
+
   it('should toggle dark mode and persist the theme preference', () => {
     component.toggleTheme();
     fixture.detectChanges();
