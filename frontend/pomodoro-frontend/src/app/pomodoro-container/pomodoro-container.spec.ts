@@ -251,6 +251,71 @@ describe('PomodoroContainer', () => {
       .toContain('1 pomodoro');
   }));
 
+  it('should display total task pomodoro progress', () => {
+    component.newTaskTitle = 'Escrever testes';
+    component.addTask();
+    component.newTaskTitle = 'Revisar tela';
+    component.addTask();
+    component.tasks = [
+      {
+        ...component.tasks[0],
+        pomodorosCount: 1,
+      },
+      {
+        ...component.tasks[1],
+        pomodorosCount: 2,
+      },
+    ];
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(component.totalTaskPomodoros).toBe(3);
+    expect(compiled.querySelector('.task-progress-summary')?.textContent)
+      .toContain('3 pomodoros registrados nas tarefas');
+  });
+
+  it('should display singular total task pomodoro progress', () => {
+    component.newTaskTitle = 'Refinar texto';
+    component.addTask();
+    component.tasks = [
+      {
+        ...component.tasks[0],
+        pomodorosCount: 1,
+      },
+    ];
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.task-progress-summary')?.textContent)
+      .toContain('1 pomodoro registrado nas tarefas');
+  });
+
+  it('should scale task progress bars by the largest task count', () => {
+    component.newTaskTitle = 'Menor tarefa';
+    component.addTask();
+    component.newTaskTitle = 'Maior tarefa';
+    component.addTask();
+    component.tasks = [
+      {
+        ...component.tasks[0],
+        pomodorosCount: 1,
+      },
+      {
+        ...component.tasks[1],
+        pomodorosCount: 4,
+      },
+    ];
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const progressBars = Array.from(
+      compiled.querySelectorAll('.task-progress-bar')
+    ) as HTMLElement[];
+
+    expect(progressBars[0].style.width).toBe('25%');
+    expect(progressBars[1].style.width).toBe('100%');
+  });
+
   it('should not increment a task when a break session ends', fakeAsync(() => {
     component.newTaskTitle = 'Revisar notas';
     component.addTask();

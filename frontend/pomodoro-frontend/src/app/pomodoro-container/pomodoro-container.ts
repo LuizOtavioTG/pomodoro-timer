@@ -135,6 +135,32 @@ export class PomodoroContainer implements OnDestroy {
     return `Focando em: ${this.activeTask.title}`;
   }
 
+  get totalTaskPomodoros(): number {
+    return this.tasks.reduce(
+      (total, task) => total + task.pomodorosCount,
+      0
+    );
+  }
+
+  get taskProgressSummary(): string {
+    if (this.totalTaskPomodoros === 0) {
+      return 'Nenhum pomodoro registrado nas tarefas';
+    }
+
+    if (this.totalTaskPomodoros === 1) {
+      return '1 pomodoro registrado nas tarefas';
+    }
+
+    return `${this.totalTaskPomodoros} pomodoros registrados nas tarefas`;
+  }
+
+  get maxTaskPomodoros(): number {
+    return Math.max(
+      ...this.tasks.map((task) => task.pomodorosCount),
+      0
+    );
+  }
+
   get completedPomodorosThisWeek(): number {
     return this.weeklyHistory.reduce(
       (total, historyEntry) => total + historyEntry.completedSessions,
@@ -221,6 +247,17 @@ export class PomodoroContainer implements OnDestroy {
         (completedSessions / this.maxCompletedPomodorosInDisplayedHistory)
         * 100
       )
+    );
+  }
+
+  getTaskProgressWidth(pomodorosCount: number): number {
+    if (pomodorosCount === 0 || this.maxTaskPomodoros === 0) {
+      return 0;
+    }
+
+    return Math.max(
+      12,
+      Math.round((pomodorosCount / this.maxTaskPomodoros) * 100)
     );
   }
 

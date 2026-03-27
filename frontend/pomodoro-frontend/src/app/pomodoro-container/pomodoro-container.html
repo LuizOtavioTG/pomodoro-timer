@@ -66,6 +66,9 @@
         <h2 id="task-panel-title">Tarefas</h2>
         <p>Organize o foco antes de iniciar o timer.</p>
       </div>
+      <strong class="task-progress-summary" aria-live="polite">
+        {{ taskProgressSummary }}
+      </strong>
     </div>
 
     <form class="task-form" (ngSubmit)="addTask()">
@@ -125,9 +128,28 @@
               (click)="selectTask(task.id)"
             >
               <span class="task-title">{{ task.title }}</span>
-              <span class="task-pomodoro-count">
-                {{ task.pomodorosCount }}
-                {{ task.pomodorosCount === 1 ? 'pomodoro' : 'pomodoros' }}
+              <span class="task-progress-row">
+                <span class="task-pomodoro-count">
+                  {{ task.pomodorosCount }}
+                  {{ task.pomodorosCount === 1 ? 'pomodoro' : 'pomodoros' }}
+                </span>
+                @if (activeTaskId === task.id) {
+                  <span class="task-active-label">Ativa</span>
+                }
+              </span>
+              <span
+                class="task-progress-track"
+                [attr.aria-label]="
+                  task.title
+                  + ': '
+                  + task.pomodorosCount
+                  + ' pomodoros registrados'
+                "
+              >
+                <span
+                  class="task-progress-bar"
+                  [style.width.%]="getTaskProgressWidth(task.pomodorosCount)"
+                ></span>
               </span>
             </button>
 
