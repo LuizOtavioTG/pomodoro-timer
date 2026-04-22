@@ -88,6 +88,10 @@ export class PomodoroTimerService {
 
     this.pause();
     this.selectNextSession(completedSession);
+
+    if (this.pomodoroConfig.getSettings().autoStartNextSession) {
+      this.start();
+    }
   }
 
   private isFocusSession(sessionType: PomodoroSessionType): boolean {

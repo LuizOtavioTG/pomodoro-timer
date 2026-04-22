@@ -55,6 +55,9 @@ describe('PomodoroContainer', () => {
     fixture = TestBed.createComponent(PomodoroContainer);
     component = fixture.componentInstance;
     configService = TestBed.inject(PomodoroConfigService);
+    configService.updateSettings({
+      autoStartNextSession: false,
+    });
     fixture.detectChanges();
   });
 
@@ -338,6 +341,122 @@ describe('PomodoroContainer', () => {
     tick(1000);
 
     expect(component.tasks[0].pomodorosCount).toBe(0);
+  }));
+
+  it('should persist tasks and the active task', () => {
+    component.newTaskTitle = 'Persistir tarefa';
+    component.addTask();
+    component.selectTask(1);
+
+    const savedTaskState = JSON.parse(
+      localStorage.getItem('pomodoro-tasks') ?? '{}'
+    );
+
+    expect(savedTaskState).toEqual({
+      tasks: [
+        {
+          id: 1,
+          title: 'Persistir tarefa',
+          completed: false,
+          pomodorosCount: 0,
+        },
+      ],
+      activeTaskId: 1,
+    });
+  });
+
+  it('should load saved tasks and active task', () => {
+    fixture.destroy();
+    localStorage.setItem(
+      'pomodoro-tasks',
+      JSON.stringify({
+        tasks: [
+          {
+            id: 4,
+            title: 'Tarefa salva',
+            completed: false,
+            pomodorosCount: 2,
+          },
+        ],
+        activeTaskId: 4,
+      })
+    );
+
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(component.tasks[0].title).toBe('Tarefa salva');
+    expect(component.activeTaskId).toBe(4);
+    expect(compiled.querySelector('.active-task-message')?.textContent)
+      .toContain('Focando em: Tarefa salva');
+  });
+
+  it('should continue task ids after loading saved tasks', () => {
+    fixture.destroy();
+    localStorage.setItem(
+      'pomodoro-tasks',
+      JSON.stringify({
+        tasks: [
+          {
+            id: 7,
+            title: 'Tarefa existente',
+            completed: false,
+            pomodorosCount: 0,
+          },
+        ],
+        activeTaskId: null,
+      })
+    );
+
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    component.newTaskTitle = 'Nova tarefa';
+
+    component.addTask();
+
+    expect(component.tasks[1].id).toBe(8);
+  });
+
+  it('should clear an invalid saved active task', () => {
+    fixture.destroy();
+    localStorage.setItem(
+      'pomodoro-tasks',
+      JSON.stringify({
+        tasks: [
+          {
+            id: 2,
+            title: 'Tarefa sem selecao valida',
+            completed: false,
+            pomodorosCount: 0,
+          },
+        ],
+        activeTaskId: 99,
+      })
+    );
+
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.activeTaskId).toBeNull();
+  });
+
+  it('should persist active task pomodoro increments', fakeAsync(() => {
+    component.newTaskTitle = 'Contar pomodoro';
+    component.addTask();
+    component.selectTask(1);
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+
+    const savedTaskState = JSON.parse(
+      localStorage.getItem('pomodoro-tasks') ?? '{}'
+    );
+
+    expect(savedTaskState.tasks[0].pomodorosCount).toBe(1);
   }));
 
   it('should toggle dark mode and persist the theme preference', () => {
@@ -768,6 +887,7 @@ describe('PomodoroContainer', () => {
       shortMinutes: 30,
       longMinutes: 55,
       breakMinutes: 12,
+      autoStartNextSession: false,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     });
@@ -828,6 +948,7 @@ describe('PomodoroContainer', () => {
       shortMinutes: 40,
       longMinutes: 70,
       breakMinutes: 15,
+      autoStartNextSession: false,
       soundNotificationsEnabled: false,
       browserNotificationsEnabled: true,
     };
@@ -838,6 +959,7 @@ describe('PomodoroContainer', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     });
@@ -845,6 +967,7 @@ describe('PomodoroContainer', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     });
@@ -857,6 +980,7 @@ describe('PomodoroContainer', () => {
       shortMinutes: 35,
       longMinutes: 60,
       breakMinutes: 8,
+      autoStartNextSession: false,
       soundNotificationsEnabled: false,
       browserNotificationsEnabled: true,
     };
@@ -867,6 +991,7 @@ describe('PomodoroContainer', () => {
       shortMinutes: 35,
       longMinutes: 60,
       breakMinutes: 8,
+      autoStartNextSession: false,
       soundNotificationsEnabled: false,
       browserNotificationsEnabled: true,
     });

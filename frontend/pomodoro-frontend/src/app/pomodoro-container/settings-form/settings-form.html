@@ -61,6 +61,25 @@
   </label>
 
   <div class="settings-section">
+    <p class="settings-section-title">Fluxo</p>
+
+    <label class="settings-toggle">
+      <span>
+        <span class="settings-label">Iniciar proxima sessao automaticamente</span>
+        <span class="settings-help">
+          Alterna entre foco e descanso quando o timer terminar.
+        </span>
+      </span>
+      <input
+        type="checkbox"
+        class="settings-checkbox"
+        [ngModel]="settings.autoStartNextSession"
+        (ngModelChange)="updateNotificationSetting('autoStartNextSession', $event)"
+      />
+    </label>
+  </div>
+
+  <div class="settings-section">
     <p class="settings-section-title">Alertas</p>
 
     <label class="settings-toggle">

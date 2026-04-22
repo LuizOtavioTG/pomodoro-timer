@@ -34,6 +34,7 @@ import { ModalComponent } from '../shared/modal/modal';
 import { SettingsFormComponent } from './settings-form/settings-form';
 
 const THEME_STORAGE_KEY = 'pomodoro-theme';
+const TASKS_STORAGE_KEY = 'pomodoro-tasks';
 type PomodoroTheme = 'light' | 'dark';
 type HistoryViewMode = 'daily' | 'weekly';
 
@@ -42,6 +43,11 @@ interface PomodoroTask {
   title: string;
   completed: boolean;
   pomodorosCount: number;
+}
+
+interface PomodoroTasksState {
+  tasks: PomodoroTask[];
+  activeTaskId: number | null;
 }
 
 @Component({
@@ -74,10 +80,11 @@ export class PomodoroContainer implements OnDestroy {
   isHistoryModalOpen = false;
   isDarkMode = this.loadThemePreference() === 'dark';
   selectedHistoryView: HistoryViewMode = 'weekly';
-  tasks: PomodoroTask[] = [];
+  private readonly savedTaskState = this.loadTaskState();
+  tasks: PomodoroTask[] = this.savedTaskState.tasks;
   newTaskTitle = '';
-  activeTaskId: number | null = null;
-  private nextTaskId = 1;
+  activeTaskId: number | null = this.savedTaskState.activeTaskId;
+  private nextTaskId = this.getNextTaskId();
   weeklyHistory: PomodoroDailyHistoryEntry[] =
     this.pomodoroHistory.getWeeklyHistory();
   currentStreak = this.pomodoroHistory.getCurrentStreak();
@@ -318,10 +325,12 @@ export class PomodoroContainer implements OnDestroy {
     ];
     this.nextTaskId += 1;
     this.newTaskTitle = '';
+    this.saveTaskState();
   }
 
   selectTask(taskId: number): void {
     this.activeTaskId = taskId;
+    this.saveTaskState();
   }
 
   toggleTaskCompleted(taskId: number): void {
@@ -335,6 +344,7 @@ export class PomodoroContainer implements OnDestroy {
         completed: !task.completed,
       };
     });
+    this.saveTaskState();
   }
 
   removeTask(taskId: number): void {
@@ -343,6 +353,8 @@ export class PomodoroContainer implements OnDestroy {
     if (this.activeTaskId === taskId) {
       this.activeTaskId = null;
     }
+
+    this.saveTaskState();
   }
 
   toggleTheme(): void {
@@ -434,6 +446,97 @@ export class PomodoroContainer implements OnDestroy {
         pomodorosCount: task.pomodorosCount + 1,
       };
     });
+    this.saveTaskState();
+  }
+
+  private loadTaskState(): PomodoroTasksState {
+    const savedTaskState = localStorage.getItem(TASKS_STORAGE_KEY);
+
+    if (!savedTaskState) {
+      return {
+        tasks: [],
+        activeTaskId: null,
+      };
+    }
+
+    try {
+      const parsedTaskState = JSON.parse(savedTaskState) as PomodoroTasksState;
+
+      if (this.isSavedTaskStateValid(parsedTaskState)) {
+        return {
+          tasks: parsedTaskState.tasks,
+          activeTaskId: this.getValidActiveTaskId(
+            parsedTaskState.tasks,
+            parsedTaskState.activeTaskId
+          ),
+        };
+      }
+    } catch {
+      this.saveTaskStateSnapshot([], null);
+      return {
+        tasks: [],
+        activeTaskId: null,
+      };
+    }
+
+    this.saveTaskStateSnapshot([], null);
+    return {
+      tasks: [],
+      activeTaskId: null,
+    };
+  }
+
+  private saveTaskState(): void {
+    this.saveTaskStateSnapshot(this.tasks, this.activeTaskId);
+  }
+
+  private saveTaskStateSnapshot(
+    tasks: PomodoroTask[],
+    activeTaskId: number | null
+  ): void {
+    localStorage.setItem(
+      TASKS_STORAGE_KEY,
+      JSON.stringify({
+        tasks,
+        activeTaskId,
+      })
+    );
+  }
+
+  private getNextTaskId(): number {
+    return Math.max(...this.tasks.map((task) => task.id), 0) + 1;
+  }
+
+  private getValidActiveTaskId(
+    tasks: PomodoroTask[],
+    activeTaskId: number | null
+  ): number | null {
+    if (activeTaskId === null) {
+      return null;
+    }
+
+    return tasks.some((task) => task.id === activeTaskId)
+      ? activeTaskId
+      : null;
+  }
+
+  private isSavedTaskStateValid(taskState: PomodoroTasksState): boolean {
+    return Array.isArray(taskState.tasks)
+      && taskState.tasks.every((task) => this.isSavedTaskValid(task))
+      && (
+        taskState.activeTaskId === null
+        || Number.isInteger(taskState.activeTaskId)
+      );
+  }
+
+  private isSavedTaskValid(task: PomodoroTask): boolean {
+    return Number.isInteger(task.id)
+      && task.id >= 1
+      && typeof task.title === 'string'
+      && task.title.trim().length > 0
+      && typeof task.completed === 'boolean'
+      && Number.isInteger(task.pomodorosCount)
+      && task.pomodorosCount >= 0;
   }
 
   private createSettingsSnapshot(): PomodoroSettings {

@@ -16,6 +16,7 @@ describe('SettingsFormComponent', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     };
@@ -36,6 +37,7 @@ describe('SettingsFormComponent', () => {
       shortMinutes: 30,
       longMinutes: 50,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     });
@@ -50,7 +52,23 @@ describe('SettingsFormComponent', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: false,
+      browserNotificationsEnabled: false,
+    });
+  });
+
+  it('should emit updated settings when auto-start changes', () => {
+    const emitSpy = spyOn(component.settingsChange, 'emit');
+
+    component.updateNotificationSetting('autoStartNextSession', false);
+
+    expect(emitSpy).toHaveBeenCalledWith({
+      shortMinutes: 25,
+      longMinutes: 50,
+      breakMinutes: 10,
+      autoStartNextSession: false,
+      soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     });
   });
@@ -123,6 +141,7 @@ describe('SettingsFormComponent', () => {
       shortMinutes: 0,
       longMinutes: -10,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     };
@@ -137,6 +156,7 @@ describe('SettingsFormComponent', () => {
       shortMinutes: 121,
       longMinutes: 50,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     };

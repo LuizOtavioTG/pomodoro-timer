@@ -13,6 +13,10 @@ type PomodoroNotificationSettingKey =
   | 'soundNotificationsEnabled'
   | 'browserNotificationsEnabled';
 
+type PomodoroToggleSettingKey =
+  | PomodoroNotificationSettingKey
+  | 'autoStartNextSession';
+
 @Component({
   selector: 'app-settings-form',
   standalone: true,
@@ -47,7 +51,7 @@ export class SettingsFormComponent {
   }
 
   updateNotificationSetting(
-    key: PomodoroNotificationSettingKey,
+    key: PomodoroToggleSettingKey,
     enabled: boolean
   ): void {
     if (key === 'browserNotificationsEnabled' && enabled) {

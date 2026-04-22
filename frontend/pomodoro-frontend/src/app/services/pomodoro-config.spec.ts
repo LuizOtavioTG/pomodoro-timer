@@ -20,6 +20,7 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     });
@@ -41,6 +42,7 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 30,
       longMinutes: 50,
       breakMinutes: 15,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     });
@@ -49,6 +51,7 @@ describe('PomodoroConfigService', () => {
         shortMinutes: 30,
         longMinutes: 50,
         breakMinutes: 15,
+        autoStartNextSession: true,
         soundNotificationsEnabled: true,
         browserNotificationsEnabled: false,
       })
@@ -65,6 +68,7 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: false,
       browserNotificationsEnabled: true,
     });
@@ -73,6 +77,7 @@ describe('PomodoroConfigService', () => {
         shortMinutes: 25,
         longMinutes: 50,
         breakMinutes: 10,
+        autoStartNextSession: true,
         soundNotificationsEnabled: false,
         browserNotificationsEnabled: true,
       })
@@ -95,6 +100,7 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 20,
       longMinutes: 45,
       breakMinutes: 8,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     });
@@ -107,6 +113,7 @@ describe('PomodoroConfigService', () => {
         shortMinutes: 20,
         longMinutes: 45,
         breakMinutes: 8,
+        autoStartNextSession: false,
         soundNotificationsEnabled: false,
         browserNotificationsEnabled: true,
       })
@@ -118,6 +125,7 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 20,
       longMinutes: 45,
       breakMinutes: 8,
+      autoStartNextSession: false,
       soundNotificationsEnabled: false,
       browserNotificationsEnabled: true,
     });
@@ -136,6 +144,7 @@ describe('PomodoroConfigService', () => {
       shortMinutes: 25,
       longMinutes: 50,
       breakMinutes: 10,
+      autoStartNextSession: true,
       soundNotificationsEnabled: true,
       browserNotificationsEnabled: false,
     });

@@ -1,5 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
+import { PomodoroConfigService } from './pomodoro-config';
 import { PomodoroTimerService } from './pomodoro-timer';
 
 describe('PomodoroTimerService', () => {
@@ -10,6 +11,9 @@ describe('PomodoroTimerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
     localStorage.clear();
+    TestBed.inject(PomodoroConfigService).updateSettings({
+      autoStartNextSession: false,
+    });
     service = TestBed.inject(PomodoroTimerService);
   });
 
@@ -82,6 +86,33 @@ describe('PomodoroTimerService', () => {
     service.start();
     tick(1000);
 
+    expect(service.isRunning).toBeFalse();
+  }));
+
+  it('should auto-start the next session when the setting is enabled', fakeAsync(() => {
+    service = createServiceWithSettings({
+      autoStartNextSession: true,
+    });
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(service.selectedSession).toBe('break');
+    expect(service.formattedTime).toBe('10:00');
+    expect(service.isRunning).toBeTrue();
+
+    service.pause();
+  }));
+
+  it('should keep the next session paused when the setting is disabled', fakeAsync(() => {
+    service.remainingSeconds = 1;
+
+    service.start();
+    tick(1000);
+
+    expect(service.selectedSession).toBe('break');
+    expect(service.formattedTime).toBe('10:00');
     expect(service.isRunning).toBeFalse();
   }));
 
@@ -339,6 +370,17 @@ describe('PomodoroTimerService', () => {
   function reloadService(): PomodoroTimerService {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({});
+
+    return TestBed.inject(PomodoroTimerService);
+  }
+
+  function createServiceWithSettings(
+    settings: Partial<ReturnType<PomodoroConfigService['getSettings']>>
+  ): PomodoroTimerService {
+    TestBed.resetTestingModule();
+    localStorage.clear();
+    TestBed.configureTestingModule({});
+    TestBed.inject(PomodoroConfigService).updateSettings(settings);
 
     return TestBed.inject(PomodoroTimerService);
   }

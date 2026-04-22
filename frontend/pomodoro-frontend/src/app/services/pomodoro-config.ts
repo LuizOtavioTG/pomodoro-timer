@@ -6,6 +6,7 @@ export interface PomodoroSettings {
   shortMinutes: number;
   longMinutes: number;
   breakMinutes: number;
+  autoStartNextSession: boolean;
   soundNotificationsEnabled: boolean;
   browserNotificationsEnabled: boolean;
 }
@@ -15,6 +16,7 @@ const DEFAULT_SETTINGS: PomodoroSettings = {
   shortMinutes: 25,
   longMinutes: 50,
   breakMinutes: 10,
+  autoStartNextSession: true,
   soundNotificationsEnabled: true,
   browserNotificationsEnabled: false,
 };
