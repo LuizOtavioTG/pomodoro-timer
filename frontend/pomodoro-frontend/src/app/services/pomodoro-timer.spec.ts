@@ -174,6 +174,36 @@ describe('PomodoroTimerService', () => {
     expect(service.formattedTime).toBe('25:00');
   }));
 
+  it('should not auto-start after a manual reset', fakeAsync(() => {
+    service = createServiceWithSettings({
+      autoStartNextSession: true,
+    });
+    service.remainingSeconds = 1;
+
+    service.start();
+    service.reset();
+    tick(1000);
+
+    expect(service.selectedSession).toBe('short');
+    expect(service.formattedTime).toBe('25:00');
+    expect(service.isRunning).toBeFalse();
+  }));
+
+  it('should not auto-start after a manual pause', fakeAsync(() => {
+    service = createServiceWithSettings({
+      autoStartNextSession: true,
+    });
+    service.remainingSeconds = 1;
+
+    service.start();
+    service.pause();
+    tick(1000);
+
+    expect(service.selectedSession).toBe('short');
+    expect(service.remainingSeconds).toBe(1);
+    expect(service.isRunning).toBeFalse();
+  }));
+
   it('should not emit a completed session when changing session before reaching zero', fakeAsync(() => {
     const sessionCompletions: unknown[] = [];
     service.sessionCompleted$.subscribe((sessionCompletion) => {
