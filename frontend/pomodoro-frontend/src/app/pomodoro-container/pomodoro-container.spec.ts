@@ -193,6 +193,73 @@ describe('PomodoroContainer', () => {
       .toContain('Sem tarefa selecionada');
   });
 
+  it('should show when a break starts automatically', fakeAsync(() => {
+    configService.updateSettings({
+      autoStartNextSession: true,
+    });
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(component.sessionStatusMessage).toBe(
+      'Pausa iniciada automaticamente'
+    );
+    expect(compiled.querySelector('.session-status-message')?.textContent)
+      .toContain('Pausa iniciada automaticamente');
+
+    component.pomodoroTimer.pause();
+  }));
+
+  it('should show when a focus session starts automatically', fakeAsync(() => {
+    configService.updateSettings({
+      autoStartNextSession: true,
+    });
+    component.pomodoroTimer.selectSession('break');
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(component.sessionStatusMessage).toBe(
+      'Foco iniciado automaticamente'
+    );
+    expect(compiled.querySelector('.session-status-message')?.textContent)
+      .toContain('Foco iniciado automaticamente');
+
+    component.pomodoroTimer.pause();
+  }));
+
+  it('should not show an automatic start message when auto-start is disabled', fakeAsync(() => {
+    component.pomodoroTimer.remainingSeconds = 1;
+
+    component.pomodoroTimer.start();
+    tick(1000);
+    fixture.detectChanges();
+
+    expect(component.sessionStatusMessage).toBeNull();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.session-status-message')).toBeNull();
+  }));
+
+  it('should clear the automatic start message after manual timer actions', fakeAsync(() => {
+    configService.updateSettings({
+      autoStartNextSession: true,
+    });
+    component.pomodoroTimer.remainingSeconds = 1;
+    component.pomodoroTimer.start();
+    tick(1000);
+    component.pomodoroTimer.pause();
+
+    component.onResetClicked();
+
+    expect(component.sessionStatusMessage).toBeNull();
+  }));
+
   it('should select an active task from the task list', () => {
     component.newTaskTitle = 'Escrever testes';
     component.addTask();

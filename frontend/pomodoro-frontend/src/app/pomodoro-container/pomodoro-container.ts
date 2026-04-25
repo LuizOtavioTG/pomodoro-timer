@@ -92,6 +92,7 @@ export class PomodoroContainer implements OnDestroy {
   settingsForm: PomodoroSettings = this.createSettingsSnapshot();
   browserNotificationPermissionStatus: BrowserNotificationPermissionStatus =
     this.browserNotification.getPermissionStatus();
+  sessionStatusMessage: string | null = null;
 
   @HostBinding('class.theme-dark')
   get darkModeClass(): boolean {
@@ -104,6 +105,7 @@ export class PomodoroContainer implements OnDestroy {
       .subscribe((sessionCompletion) => {
         this.addCompletedPomodoroToActiveTask(sessionCompletion);
         this.refreshHistory();
+        this.updateSessionStatusMessage(sessionCompletion);
         this.playSessionEndSound();
         this.showSessionEndBrowserNotification(sessionCompletion);
       });
@@ -277,6 +279,7 @@ export class PomodoroContainer implements OnDestroy {
       return;
     }
 
+    this.clearSessionStatusMessage();
     this.pomodoroTimer.selectSession(sessionType);
     this.updateDocumentTitle();
   }
@@ -284,11 +287,13 @@ export class PomodoroContainer implements OnDestroy {
   onTimerToggleClicked(): void {
     if (this.pomodoroTimer.isRunning) {
       this.pomodoroTimer.pause();
+      this.clearSessionStatusMessage();
       this.stopDocumentTitleTimer();
       this.updateDocumentTitle();
       return;
     }
 
+    this.clearSessionStatusMessage();
     this.soundNotification.prepare();
     this.pomodoroTimer.start();
     this.updateDocumentTitle();
@@ -304,6 +309,7 @@ export class PomodoroContainer implements OnDestroy {
     }
 
     this.pomodoroTimer.reset();
+    this.clearSessionStatusMessage();
     this.updateDocumentTitle();
   }
 
@@ -391,6 +397,7 @@ export class PomodoroContainer implements OnDestroy {
     this.pomodoroConfig.resetSettings();
     this.settingsForm = this.createSettingsSnapshot();
     this.pomodoroTimer.reset();
+    this.clearSessionStatusMessage();
     this.updateDocumentTitle();
   }
 
@@ -401,6 +408,7 @@ export class PomodoroContainer implements OnDestroy {
 
     this.pomodoroConfig.updateSettings({ ...this.settingsForm });
     this.pomodoroTimer.reset();
+    this.clearSessionStatusMessage();
     this.updateDocumentTitle();
     this.closeSettingsModal();
   }
@@ -547,6 +555,23 @@ export class PomodoroContainer implements OnDestroy {
     this.weeklyHistory = this.pomodoroHistory.getWeeklyHistory();
     this.currentStreak = this.pomodoroHistory.getCurrentStreak();
     this.currentWeeklyStreak = this.pomodoroHistory.getCurrentWeeklyStreak();
+  }
+
+  private updateSessionStatusMessage(
+    sessionCompletion: PomodoroSessionCompletion
+  ): void {
+    if (!this.pomodoroConfig.getSettings().autoStartNextSession) {
+      this.sessionStatusMessage = null;
+      return;
+    }
+
+    this.sessionStatusMessage = sessionCompletion.nextSession === 'break'
+      ? 'Pausa iniciada automaticamente'
+      : 'Foco iniciado automaticamente';
+  }
+
+  private clearSessionStatusMessage(): void {
+    this.sessionStatusMessage = null;
   }
 
   private updateDocumentTitle(): void {

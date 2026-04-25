@@ -52,6 +52,11 @@
     <p class="active-task-message" aria-live="polite">
       {{ activeTaskMessage }}
     </p>
+    @if (sessionStatusMessage) {
+      <p class="session-status-message" aria-live="polite">
+        {{ sessionStatusMessage }}
+      </p>
+    }
     <app-timer-controls
       [isRunning]="pomodoroTimer.isRunning"
       [isResetDisabled]="pomodoroTimer.isRunning"
