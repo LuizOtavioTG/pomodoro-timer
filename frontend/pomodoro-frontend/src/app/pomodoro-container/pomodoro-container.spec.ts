@@ -526,14 +526,20 @@ describe('PomodoroContainer', () => {
     expect(savedTaskState.tasks[0].pomodorosCount).toBe(1);
   }));
 
-  it('should toggle dark mode and persist the theme preference', () => {
+  it('should start in dark mode by default', () => {
+    expect(component.isDarkMode).toBeTrue();
+    expect((fixture.nativeElement as HTMLElement).classList)
+      .toContain('theme-dark');
+  });
+
+  it('should toggle light mode and persist the theme preference', () => {
     component.toggleTheme();
     fixture.detectChanges();
 
-    expect(component.isDarkMode).toBeTrue();
-    expect(localStorage.getItem('pomodoro-theme')).toBe('dark');
+    expect(component.isDarkMode).toBeFalse();
+    expect(localStorage.getItem('pomodoro-theme')).toBe('light');
     expect((fixture.nativeElement as HTMLElement).classList)
-      .toContain('theme-dark');
+      .not.toContain('theme-dark');
   });
 
   it('should load a saved dark mode preference', () => {
@@ -547,6 +553,19 @@ describe('PomodoroContainer', () => {
     expect(component.isDarkMode).toBeTrue();
     expect((fixture.nativeElement as HTMLElement).classList)
       .toContain('theme-dark');
+  });
+
+  it('should load a saved light mode preference', () => {
+    fixture.destroy();
+    localStorage.setItem('pomodoro-theme', 'light');
+
+    fixture = TestBed.createComponent(PomodoroContainer);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.isDarkMode).toBeFalse();
+    expect((fixture.nativeElement as HTMLElement).classList)
+      .not.toContain('theme-dark');
   });
 
   it('should display singular completed pomodoro progress', () => {

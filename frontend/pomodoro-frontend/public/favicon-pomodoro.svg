@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Pomodoro timer">
+  <title>Pomodoro timer</title>
+
+  <!-- fundo no tom verde escuro da aplicação -->
+  <rect width="64" height="64" rx="14" fill="#003B2F"/>
+
+  <!-- sombra suave -->
+  <ellipse cx="32" cy="52" rx="17" ry="4" fill="#00291F" opacity="0.45"/>
+
+  <!-- folhas -->
+  <path d="M31 16c-2.4-5.1-7.7-7.4-12.9-5.8 1.2 5.2 5.6 8.5 10.9 8.2l2-.1Z" fill="#9BE7B4"/>
+  <path d="M33 16c2.4-5.1 7.7-7.4 12.9-5.8-1.2 5.2-5.6 8.5-10.9 8.2l-2-.1Z" fill="#B7F2C7"/>
+  <path d="M31.9 18.2c-1.2-3.9.2-7.7 3.6-10.3 2.2 4.2 1.3 8.3-2.2 11.1l-1.4-.8Z" fill="#6EDB8F"/>
+
+  <!-- tomate -->
+  <path d="M31.9 18.4c11.2 0 20.4 8.2 20.4 19.1 0 12-9.4 20.3-20.4 20.3S11.5 49.5 11.5 37.5c0-10.9 9.2-19.1 20.4-19.1Z" fill="#FF3B1F"/>
+  <path d="M47.7 38.3c0 9.3-7.2 15.6-15.7 15.6-5.8 0-11.2-3-14-8 3.4 2.7 7.7 4.3 12.5 4.3 8.9 0 16.2-6.1 17.2-14.3v2.4Z" fill="#E52C19" opacity="0.55"/>
+  <path d="M20 28.4c2.1-3 5.8-4.9 9.9-5.2" stroke="#FF8A3D" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+
+  <!-- mostrador do timer -->
+  <circle cx="32" cy="37" r="12.5" fill="#FFF4C7"/>
+  <circle cx="32" cy="37" r="9.3" fill="none" stroke="#003B2F" stroke-width="2.2" opacity="0.22"/>
+  <path d="M32 27.7a9.3 9.3 0 0 1 8.1 4.7" fill="none" stroke="#FF7A1A" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M32 37V30" stroke="#003B2F" stroke-width="2.7" stroke-linecap="round"/>
+  <path d="M32 37l5.2 4" stroke="#003B2F" stroke-width="2.7" stroke-linecap="round"/>
+  <circle cx="32" cy="37" r="2.2" fill="#003B2F"/>
+</svg>

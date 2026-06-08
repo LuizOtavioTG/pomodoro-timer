@@ -690,11 +690,11 @@ export class PomodoroContainer implements OnDestroy {
   private loadThemePreference(): PomodoroTheme {
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
 
-    if (savedTheme === 'dark') {
-      return 'dark';
+    if (savedTheme === 'light') {
+      return 'light';
     }
 
-    return 'light';
+    return 'dark';
   }
 
   private saveThemePreference(theme: PomodoroTheme): void {
