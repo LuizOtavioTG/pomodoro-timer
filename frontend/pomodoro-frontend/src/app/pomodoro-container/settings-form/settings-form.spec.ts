@@ -95,7 +95,7 @@ describe('SettingsFormComponent', () => {
       'permission-denied'
     );
     expect(component.getBrowserNotificationHelpText()).toBe(
-      'Permissao bloqueada nas configuracoes do navegador.'
+      'Permissão bloqueada nas configurações do navegador.'
     );
   });
 
@@ -104,25 +104,25 @@ describe('SettingsFormComponent', () => {
 
     expect(component.isBrowserNotificationToggleDisabled()).toBeTrue();
     expect(component.getBrowserNotificationPermissionLabel()).toBe(
-      'Indisponivel'
+      'Indisponível'
     );
     expect(component.getBrowserNotificationPermissionClass()).toBe(
       'permission-unsupported'
     );
     expect(component.getBrowserNotificationHelpText()).toBe(
-      'Seu navegador nao suporta notificacoes.'
+      'Seu navegador não suporta notificações.'
     );
   });
 
   it('should show the browser notification permission as not requested by default', () => {
     expect(component.getBrowserNotificationPermissionLabel()).toBe(
-      'Nao solicitada'
+      'Não solicitada'
     );
     expect(component.getBrowserNotificationPermissionClass()).toBe(
       'permission-default'
     );
     expect(component.getBrowserNotificationHelpText()).toBe(
-      'Ao ativar, o navegador pedira permissao.'
+      'Ao ativar, o navegador pedirá permissão.'
     );
   });
 
@@ -146,8 +146,8 @@ describe('SettingsFormComponent', () => {
       browserNotificationsEnabled: false,
     };
 
-    expect(component.getShortError()).toBe('The value must be greater than zero.');
-    expect(component.getLongError()).toBe('The value must be greater than zero.');
+    expect(component.getShortError()).toBe('O valor deve ser maior que zero.');
+    expect(component.getLongError()).toBe('O valor deve ser maior que zero.');
     expect(component.isFormValid()).toBeFalse();
   });
 
@@ -161,7 +161,7 @@ describe('SettingsFormComponent', () => {
       browserNotificationsEnabled: false,
     };
 
-    expect(component.getShortError()).toBe('The value must be at most 120 minutes.');
+    expect(component.getShortError()).toBe('O valor deve ser no máximo 120 minutos.');
     expect(component.isFormValid()).toBeFalse();
   });
 });

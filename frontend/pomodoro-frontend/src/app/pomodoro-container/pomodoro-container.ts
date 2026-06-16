@@ -122,14 +122,14 @@ export class PomodoroContainer implements OnDestroy {
     const completedPomodoros = this.pomodoroTimer.completedPomodorosToday;
 
     if (completedPomodoros === 0) {
-      return 'Nenhum pomodoro concluido hoje';
+      return 'Nenhum pomodoro concluído hoje';
     }
 
     if (completedPomodoros === 1) {
-      return '1 pomodoro concluido hoje';
+      return '1 pomodoro concluído hoje';
     }
 
-    return `${completedPomodoros} pomodoros concluidos hoje`;
+    return `${completedPomodoros} pomodoros concluídos hoje`;
   }
 
   get activeTask(): PomodoroTask | null {
@@ -210,23 +210,23 @@ export class PomodoroContainer implements OnDestroy {
       return 'Hoje';
     }
 
-    return 'Ultimos 7 dias';
+    return 'Últimos 7 dias';
   }
 
   get historyListAriaLabel(): string {
     if (this.selectedHistoryView === 'daily') {
-      return 'Pomodoros concluidos hoje';
+      return 'Pomodoros concluídos hoje';
     }
 
-    return 'Pomodoros concluidos por data';
+    return 'Pomodoros concluídos por data';
   }
 
   get historyChartAriaLabel(): string {
     if (this.selectedHistoryView === 'daily') {
-      return 'Grafico de pomodoros concluidos hoje';
+      return 'Gráfico de pomodoros concluídos hoje';
     }
 
-    return 'Grafico de pomodoros concluidos nos ultimos 7 dias';
+    return 'Gráfico de pomodoros concluídos nos últimos 7 dias';
   }
 
   get maxCompletedPomodorosInDisplayedHistory(): number {

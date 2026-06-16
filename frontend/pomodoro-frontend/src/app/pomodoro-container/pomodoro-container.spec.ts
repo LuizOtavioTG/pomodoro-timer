@@ -118,7 +118,7 @@ describe('PomodoroContainer', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.modal-backdrop')).not.toBeNull();
-    expect(compiled.textContent).toContain('Configuracoes');
+    expect(compiled.textContent).toContain('Configurações');
   });
 
   it('should display the completed pomodoros progress for today', () => {
@@ -127,7 +127,7 @@ describe('PomodoroContainer', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
-      .toContain('4 pomodoros concluidos hoje');
+      .toContain('4 pomodoros concluídos hoje');
   });
 
   it('should add a task from the task form', () => {
@@ -292,7 +292,7 @@ describe('PomodoroContainer', () => {
   });
 
   it('should clear the active task when it is removed', () => {
-    component.newTaskTitle = 'Ler documentacao';
+    component.newTaskTitle = 'Ler documentação';
     component.addTask();
     component.selectTask(1);
 
@@ -400,7 +400,7 @@ describe('PomodoroContainer', () => {
   }));
 
   it('should not increment any task when no task is active', fakeAsync(() => {
-    component.newTaskTitle = 'Sem selecao';
+    component.newTaskTitle = 'Sem seleção';
     component.addTask();
     component.pomodoroTimer.remainingSeconds = 1;
 
@@ -494,7 +494,7 @@ describe('PomodoroContainer', () => {
         tasks: [
           {
             id: 2,
-            title: 'Tarefa sem selecao valida',
+            title: 'Tarefa sem seleção válida',
             completed: false,
             pomodorosCount: 0,
           },
@@ -574,7 +574,7 @@ describe('PomodoroContainer', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
-      .toContain('1 pomodoro concluido hoje');
+      .toContain('1 pomodoro concluído hoje');
   });
 
   it('should update the completed pomodoros display when a focus session ends', fakeAsync(() => {
@@ -586,7 +586,7 @@ describe('PomodoroContainer', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.daily-pomodoro-count')?.textContent)
-      .toContain('1 pomodoro concluido hoje');
+      .toContain('1 pomodoro concluído hoje');
   }));
 
   it('should display the weekly history summary', () => {
@@ -594,16 +594,16 @@ describe('PomodoroContainer', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.querySelector('.modal-title')?.textContent)
-      .toContain('Historico');
+      .toContain('Histórico');
     expect(compiled.querySelector('.history-summary')?.textContent)
-      .toContain('Ultimos 7 dias');
+      .toContain('Últimos 7 dias');
     expect(compiled.querySelectorAll('.history-list-item').length).toBe(7);
     expect(compiled.querySelectorAll('.history-chart-item').length).toBe(7);
   });
 
   it('should hide the history modal by default', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const historyButton = getToolbarButton('Historico');
+    const historyButton = getToolbarButton('Histórico');
 
     expect(compiled.querySelector('.history-summary')).toBeNull();
     expect(compiled.querySelector('.modal-backdrop')).toBeNull();
@@ -613,7 +613,7 @@ describe('PomodoroContainer', () => {
 
   it('should open the history modal from the toolbar and close it from the modal', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const historyButton = getToolbarButton('Historico');
+    const historyButton = getToolbarButton('Histórico');
 
     historyButton.click();
     fixture.detectChanges();
@@ -635,7 +635,7 @@ describe('PomodoroContainer', () => {
   it('should switch between daily and weekly history views', () => {
     showHistoryPanel();
     const compiled = fixture.nativeElement as HTMLElement;
-    const dailyButton = getHistoryViewButton('Diario');
+    const dailyButton = getHistoryViewButton('Diário');
     const weeklyButton = getHistoryViewButton('Semanal');
 
     dailyButton.click();
@@ -653,7 +653,7 @@ describe('PomodoroContainer', () => {
     expect(compiled.querySelectorAll('.history-list-item').length).toBe(1);
     expect(compiled.querySelectorAll('.history-chart-item').length).toBe(1);
     expect(compiled.querySelector('.history-chart')?.getAttribute('aria-label'))
-      .toBe('Grafico de pomodoros concluidos hoje');
+      .toBe('Gráfico de pomodoros concluídos hoje');
 
     weeklyButton.click();
     fixture.detectChanges();
@@ -661,7 +661,7 @@ describe('PomodoroContainer', () => {
     expect(component.selectedHistoryView).toBe('weekly');
     expect(weeklyButton.getAttribute('aria-pressed')).toBe('true');
     expect(compiled.querySelector('.history-heading')?.textContent)
-      .toContain('Ultimos 7 dias');
+      .toContain('Últimos 7 dias');
     expect(compiled.querySelectorAll('.history-total').length).toBe(3);
     expect(compiled.querySelector('.history-totals')?.textContent)
       .toContain('Semana');
@@ -790,7 +790,7 @@ describe('PomodoroContainer', () => {
     expect(yesterdayBar.style.height).toBe('50%');
     expect(todayBar.style.height).toBe('100%');
     expect(chartItems[6].getAttribute('aria-label'))
-      .toContain('4 pomodoros concluidos');
+      .toContain('4 pomodoros concluídos');
   });
 
   it('should render empty chart bars for days without sessions', () => {

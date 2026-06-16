@@ -11,9 +11,9 @@ import { ModalComponent } from './modal';
       title="Teste"
       (closed)="closeCount = closeCount + 1"
     >
-      <div modalBody>Conteudo</div>
+      <div modalBody>Conteúdo</div>
       <div modalActions>
-        <button type="button">Acao</button>
+        <button type="button">Ação</button>
       </div>
     </app-modal>
   `,
@@ -40,8 +40,8 @@ describe('ModalComponent', () => {
   it('should render projected content when open', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('Conteudo');
-    expect(compiled.textContent).toContain('Acao');
+    expect(compiled.textContent).toContain('Conteúdo');
+    expect(compiled.textContent).toContain('Ação');
   });
 
   it('should emit close when clicking the close button', () => {

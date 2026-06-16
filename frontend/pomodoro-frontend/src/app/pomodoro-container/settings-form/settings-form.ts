@@ -75,12 +75,12 @@ export class SettingsFormComponent {
       case 'granted':
         return 'Mostra um aviso fora da aba quando permitido.';
       case 'denied':
-        return 'Permissao bloqueada nas configuracoes do navegador.';
+        return 'Permissão bloqueada nas configurações do navegador.';
       case 'unsupported':
-        return 'Seu navegador nao suporta notificacoes.';
+        return 'Seu navegador não suporta notificações.';
       case 'default':
       default:
-        return 'Ao ativar, o navegador pedira permissao.';
+        return 'Ao ativar, o navegador pedirá permissão.';
     }
   }
 
@@ -91,10 +91,10 @@ export class SettingsFormComponent {
       case 'denied':
         return 'Bloqueada';
       case 'unsupported':
-        return 'Indisponivel';
+        return 'Indisponível';
       case 'default':
       default:
-        return 'Nao solicitada';
+        return 'Não solicitada';
     }
   }
 
@@ -122,15 +122,15 @@ export class SettingsFormComponent {
 
   private getDurationError(value: number): string | null {
     if (!Number.isInteger(value)) {
-      return 'Use an integer number of minutes.';
+      return 'Use um número inteiro de minutos.';
     }
 
     if (value < this.minMinutes) {
-      return 'The value must be greater than zero.';
+      return 'O valor deve ser maior que zero.';
     }
 
     if (value > this.maxMinutes) {
-      return `The value must be at most ${this.maxMinutes} minutes.`;
+      return `O valor deve ser no máximo ${this.maxMinutes} minutos.`;
     }
 
     return null;
